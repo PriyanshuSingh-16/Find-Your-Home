@@ -1,0 +1,903 @@
+<!-- HOME PAGE -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<style>
+    .hero-section {
+        padding: 2rem 0 4.5rem;
+    }
+
+    .hero-shell {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(233, 243, 247, 0.95) 100%);
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        border-radius: 2rem;
+        box-shadow: 0 1.6rem 3rem rgba(31, 56, 88, 0.08);
+        overflow: hidden;
+        padding: 3.5rem;
+        position: relative;
+    }
+
+    .hero-shell::before {
+        background: radial-gradient(circle, rgba(186, 220, 235, 0.45) 0%, rgba(186, 220, 235, 0) 70%);
+        content: '';
+        height: 20rem;
+        position: absolute;
+        right: -5rem;
+        top: -5rem;
+        width: 20rem;
+    }
+
+    .hero-copy,
+    .hero-visual {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-copy {
+        color: #284055;
+        padding-right: 1rem;
+    }
+
+    .hero-copy h1 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-size: clamp(2.7rem, 5vw, 4.5rem);
+        line-height: 1.08;
+        margin-bottom: 1rem;
+    }
+
+    .hero-copy h1 span {
+        color: #2d7396;
+        display: inline-block;
+        font-style: italic;
+        margin-top: 0.2rem;
+    }
+
+    .hero-copy p {
+        color: #5d7486;
+        font-size: 1.05rem;
+        line-height: 1.9;
+        margin-bottom: 1.75rem;
+        max-width: 34rem;
+    }
+
+    .hero-copy .hero-eyebrow {
+        color: #4c86a8;
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+    }
+
+    .hero-actions {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .hero-primary-btn {
+        border-radius: 999px;
+        box-shadow: 0 1rem 1.8rem rgba(45, 115, 150, 0.18);
+        padding: 0.8rem 1.5rem;
+    }
+
+    .hero-inline-note {
+        color: #4f6d82;
+        font-size: 0.95rem;
+    }
+
+    .hero-visual {
+        display: flex;
+        justify-content: center;
+    }
+
+    .hero-visual-card {
+        align-items: center;
+        background: linear-gradient(160deg, #dcecf4 0%, #c0dce9 100%);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 1.75rem;
+        display: flex;
+        justify-content: center;
+        min-height: 100%;
+        padding: 2rem;
+        width: 100%;
+    }
+
+    .hero-visual-card img {
+        filter: drop-shadow(0 1.1rem 1.8rem rgba(31, 56, 88, 0.12));
+        max-width: min(100%, 440px);
+    }
+
+    .about-section {
+        padding: 5rem 0;
+        background: linear-gradient(180deg, #f8fbff 0%, #eef4f7 100%);
+    }
+
+    .about-shell {
+        background: rgba(255, 255, 255, 0.88);
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        border-radius: 2rem;
+        box-shadow: 0 1.5rem 3rem rgba(31, 56, 88, 0.08);
+        overflow: hidden;
+    }
+
+    .about-copy {
+        padding: 3rem;
+        color: #284055;
+    }
+
+    .about-eyebrow {
+        color: #4c86a8;
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+    }
+
+    .about-copy h2 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-size: clamp(2.25rem, 4vw, 3.4rem);
+        font-style: italic;
+        margin-bottom: 1rem;
+    }
+
+    .about-lead {
+        color: #496579;
+        font-size: 1.05rem;
+        line-height: 1.9;
+        margin-bottom: 1.5rem;
+    }
+
+    .about-body {
+        color: #5e7687;
+        line-height: 1.9;
+        margin-bottom: 2rem;
+    }
+
+    .about-points {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .about-point {
+        align-items: flex-start;
+        background: #f7fafc;
+        border: 1px solid rgba(76, 134, 168, 0.14);
+        border-radius: 1rem;
+        display: flex;
+        gap: 0.9rem;
+        padding: 1rem 1.1rem;
+    }
+
+    .about-point i {
+        background: #dcecf7;
+        border-radius: 50%;
+        color: #2b6789;
+        flex-shrink: 0;
+        font-size: 0.95rem;
+        height: 2rem;
+        line-height: 2rem;
+        margin-top: 0.1rem;
+        text-align: center;
+        width: 2rem;
+    }
+
+    .about-point span {
+        color: #365166;
+        line-height: 1.6;
+    }
+
+    .about-panel {
+        background: linear-gradient(160deg, #d9ebf3 0%, #b8d9e7 100%);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        justify-content: center;
+        padding: 3rem;
+        position: relative;
+    }
+
+    .about-panel::before {
+        background: rgba(255, 255, 255, 0.32);
+        border-radius: 50%;
+        content: '';
+        height: 15rem;
+        position: absolute;
+        right: -4rem;
+        top: -4rem;
+        width: 15rem;
+    }
+
+    .about-stat-grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .about-stat {
+        backdrop-filter: blur(4px);
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        border-radius: 1.25rem;
+        padding: 1.1rem;
+    }
+
+    .about-stat strong {
+        color: #133047;
+        display: block;
+        font-size: 1.35rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .about-stat span {
+        color: #426074;
+        font-size: 0.95rem;
+    }
+
+    .about-note {
+        color: #1d425c;
+        font-size: 1rem;
+        line-height: 1.8;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    @media (max-width: 991.98px) {
+        .about-copy,
+        .about-panel {
+            padding: 2rem;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .about-stat-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .section-block {
+        padding: 5rem 0;
+    }
+
+    .section-heading {
+        margin: 0 auto 3rem;
+        max-width: 760px;
+        text-align: center;
+    }
+
+    .section-heading p:first-child {
+        color: #4c86a8;
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        margin-bottom: 0.85rem;
+        text-transform: uppercase;
+    }
+
+    .section-heading h3 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-size: clamp(2.1rem, 4vw, 3.2rem);
+        font-style: italic;
+        margin-bottom: 0.9rem;
+    }
+
+    .section-heading p:last-child {
+        color: #5e7687;
+        line-height: 1.8;
+        margin: 0;
+    }
+
+    .why-section {
+        background: linear-gradient(180deg, #f6fafc 0%, #edf3f7 100%);
+    }
+
+    .why-shell,
+    .contact-shell {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        border-radius: 2rem;
+        box-shadow: 0 1.5rem 3rem rgba(31, 56, 88, 0.08);
+        overflow: hidden;
+    }
+
+    .why-visual {
+        min-height: 100%;
+        padding: 2rem;
+    }
+
+    .why-visual-card {
+        border-radius: 1.75rem;
+        min-height: 100%;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .why-visual-card img {
+        height: 100%;
+        min-height: 460px;
+        object-fit: cover;
+        width: 100%;
+    }
+
+    .why-visual-overlay {
+        align-items: flex-end;
+        background: linear-gradient(180deg, rgba(17, 41, 59, 0.12) 0%, rgba(17, 41, 59, 0.7) 100%);
+        color: #fff;
+        display: flex;
+        inset: 0;
+        padding: 2rem;
+        position: absolute;
+    }
+
+    .why-visual-overlay div {
+        max-width: 26rem;
+    }
+
+    .why-visual-overlay h3 {
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .why-visual-overlay p {
+        color: rgba(255, 255, 255, 0.88);
+        margin: 0;
+    }
+
+    .why-content {
+        display: grid;
+        gap: 1rem;
+        padding: 2rem 2rem 2rem 0;
+    }
+
+    .why-card {
+        background: #f8fbfd;
+        border: 1px solid rgba(76, 134, 168, 0.14);
+        border-radius: 1.25rem;
+        padding: 1.35rem 1.4rem;
+    }
+
+    .why-card h4 {
+        color: #17344b;
+        font-size: 1.1rem;
+        margin-bottom: 0.65rem;
+    }
+
+    .why-card p {
+        color: #5d7486;
+        line-height: 1.75;
+        margin: 0;
+    }
+
+    .features-section {
+        background: #f7fbfd;
+    }
+
+    .feature-card {
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        border-radius: 1.6rem;
+        box-shadow: 0 1.1rem 2.4rem rgba(31, 56, 88, 0.07);
+        height: 100%;
+        padding: 1.6rem;
+    }
+
+    .feature-icon {
+        align-items: center;
+        background: #e2f0f8;
+        border-radius: 1rem;
+        color: #2a6789;
+        display: inline-flex;
+        font-size: 1.4rem;
+        height: 3.25rem;
+        justify-content: center;
+        margin-bottom: 1rem;
+        width: 3.25rem;
+    }
+
+    .feature-card h4 {
+        color: #17344b;
+        margin-bottom: 0.7rem;
+    }
+
+    .feature-card p {
+        color: #5d7486;
+        line-height: 1.8;
+        margin: 0;
+    }
+
+    .contact-section {
+        background: linear-gradient(180deg, #eef5f8 0%, #f8fbfd 100%);
+    }
+
+    .contact-panel {
+        background: linear-gradient(160deg, #d7eaf3 0%, #bddbe9 100%);
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        height: 100%;
+        justify-content: center;
+        padding: 2.4rem;
+    }
+
+    .contact-panel h3 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-size: clamp(2rem, 3.4vw, 2.8rem);
+        font-style: italic;
+        margin-bottom: 0.25rem;
+    }
+
+    .contact-panel p {
+        color: #426074;
+        line-height: 1.8;
+        margin: 0;
+    }
+
+    .contact-panel img {
+        border-radius: 1.5rem;
+        margin-top: 0.5rem;
+        object-fit: cover;
+        width: 100%;
+    }
+
+    .contact-form-wrap {
+        padding: 2.4rem;
+    }
+
+    .contact-form-wrap label {
+        color: #18374d;
+        font-weight: 600;
+    }
+
+    .contact-form-wrap .input-group-text {
+        background: #e8f1f6;
+        border-color: #d6e4ec;
+        color: #35617c;
+    }
+
+    .contact-form-wrap .form-control {
+        border-color: #d6e4ec;
+        border-radius: 0.9rem;
+        padding: 0.8rem 1rem;
+    }
+
+    .contact-form-wrap textarea.form-control {
+        min-height: 10rem;
+    }
+
+    .contact-submit {
+        border-radius: 999px;
+        padding: 0.7rem 1.6rem;
+    }
+
+    @media (max-width: 991.98px) {
+        .hero-shell {
+            padding: 2.25rem;
+        }
+
+        .hero-copy {
+            padding-right: 0;
+        }
+
+        .why-content {
+            padding: 0 2rem 2rem;
+        }
+
+        .why-visual-card img {
+            min-height: 320px;
+        }
+    }
+
+    .profile-card-3 {
+        font-family: 'Open Sans', Arial, sans-serif;
+        position: relative;
+        float: left;
+        overflow: hidden;
+        width: 100%;
+        text-align: center;
+        height:368px;
+        border:none;
+    }
+
+    .profile-card-3 .background-block {
+        float: left;
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .profile-card-3 .background-block .background {
+        width:100%;
+        vertical-align: top;
+        opacity: 0.9;
+        -webkit-filter: blur(0.5px);
+        filter: blur(0.5px);
+        -webkit-transform: scale(1.8);
+        transform: scale(2.8);
+    }
+
+    .profile-card-3 .card-content {
+        width: 100%;
+        padding: 15px 25px;
+        color:#232323;
+        float:left;
+        background:#efefef;
+        height:50%;
+        border-radius:0 0 5px 5px;
+        position: relative;
+        z-index: 9999;
+    }
+
+    .profile-card-3 .card-content::before {
+        content: '';
+        background: #efefef;
+        width: 120%;
+        height: 100%;
+        left: 11px;
+        bottom: 51px;
+        position: absolute;
+        z-index: -1;
+        transform: rotate(-13deg);
+    }
+
+    .profile-card-3 .profile {
+        border-radius: 50%;
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        max-width: 100px;
+        opacity: 1;
+        box-shadow: 3px 3px 20px rgba(0, 0, 0, 0.5);
+        border: 2px solid rgba(255, 255, 255, 1);
+        -webkit-transform: translate(-50%, 0%);
+        transform: translate(-50%, 0%);
+        z-index:99999;
+    }
+
+    .profile-card-3 h2 {
+        margin: 0 0 5px;
+        font-weight: 600;
+        font-size:25px;
+    }
+
+    .profile-card-3 h2 small {
+        display: block;
+        font-size: 15px;
+        margin-top:10px;
+    }
+
+    .profile-card-3 i {
+        display: inline-block;
+        font-size: 16px;
+        color: #232323;
+        text-align: center;
+        border: 1px solid #232323;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 50%;
+        margin:0 5px;
+    }
+
+    .profile-card-3 .icon-block{
+        float:left;
+        width:100%;
+        margin-top:15px;
+    }
+
+    .profile-card-3 .icon-block a{
+        text-decoration:none;
+    }
+
+    .profile-card-3 i:hover {
+        background-color:#232323;
+        color:#fff;
+        text-decoration:none;
+    }
+</style>
+
+<section class="overflow-x-hidden">
+    <section id="hero" class="hero-section">
+        <div class="container">
+            <div class="hero-shell">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-6" data-aos="fade-right" data-aos-duration="1000">
+                        <div class="hero-copy">
+                            <p class="hero-eyebrow">PG Finder</p>
+                            <h1>Welcome to <span>PG Finder v2</span></h1>
+                            <p>A softer, simpler way to explore PGs and hostels across cities, compare the details that matter, and move toward booking with more confidence.</p>
+                            <div class="hero-actions">
+                                <a role='button' href="/property/search" class="btn btn-primary hero-primary-btn">Search PGs</a>
+                                <span class="hero-inline-note">Search, compare, review, and book in one place.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6" data-aos="fade-left" data-aos-duration="1000">
+                        <div class="hero-visual">
+                            <div class="hero-visual-card">
+                                <img src="/images/party.png" alt="Logo" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-shell row g-0 align-items-stretch">
+                <div class="col-lg-7">
+                    <div class="about-copy">
+                        <p class="about-eyebrow">About Us</p>
+                        <h2>Designed to make PG hunting feel simple.</h2>
+                        <p class="about-lead">
+                            Whether you're a student, a working professional, or someone relocating to a new city, PG Finder helps you find a place that feels right without wasting time on scattered listings.
+                        </p>
+                        <p class="about-body">
+                            Search across cities, compare options, review amenities, and move from discovery to booking in one place. The platform is built to keep the process practical, transparent, and easy to navigate for both tenants and property owners.
+                        </p>
+                        <div class="about-points">
+                            <div class="about-point">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <span>Each listed PG owner goes through a verification process before their property is presented on the platform.</span>
+                            </div>
+                            <div class="about-point">
+                                <i class="fa-solid fa-filter-circle-check"></i>
+                                <span>Listings are reviewed regularly so outdated, low-quality, or unreliable options can be filtered out quickly.</span>
+                            </div>
+                            <div class="about-point">
+                                <i class="fa-solid fa-headset"></i>
+                                <span>Support stays available when users need help with search, booking, or general platform guidance.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="about-panel">
+                        <div class="about-stat-grid">
+                            <div class="about-stat">
+                                <strong>City-wise</strong>
+                                <span>Explore listings across multiple cities with focused location search.</span>
+                            </div>
+                            <div class="about-stat">
+                                <strong>Preference-led</strong>
+                                <span>Filter by budget, amenities, and stay requirements with less noise.</span>
+                            </div>
+                            <div class="about-stat">
+                                <strong>Review-ready</strong>
+                                <span>Check property images and user feedback before making a decision.</span>
+                            </div>
+                            <div class="about-stat">
+                                <strong>Booking flow</strong>
+                                <span>Move from shortlisting to booking through one connected experience.</span>
+                            </div>
+                        </div>
+                        <p class="about-note">
+                            PG Finder is built around clarity: less friction, better discovery, and a calmer way to find temporary accommodation in unfamiliar cities.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="why-us" class="why-section section-block">
+        <div class="container">
+            <div class="section-heading">
+                <p>Why Us</p>
+                <h3>A calmer platform for a typically messy search.</h3>
+                <p>We focus on reducing friction at each step, from discovery to booking, without overwhelming the user interface.</p>
+            </div>
+            <div class="why-shell row g-0 align-items-stretch">
+                <div class="col-lg-5">
+                    <div class="why-visual">
+                        <div class="why-visual-card">
+                            <img src="/images/why-us.jpg" alt="why-us">
+                            <div class="why-visual-overlay">
+                                <div>
+                                    <h3>Why Choose PG Finder</h3>
+                                    <p>Built to help users search with more confidence, compare with more clarity, and book with less confusion.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="why-content">
+                        <div class="why-card">
+                            <h4>Comprehensive database of PGs and hostels</h4>
+                            <p>PG Finder offers a broad set of listings across India, from budget-friendly stays to more premium options, so users can explore accommodation that fits their location, budget, and amenity preferences.</p>
+                        </div>
+                        <div class="why-card">
+                            <h4>Advanced search and filtering options</h4>
+                            <p>Search tools are designed to help users narrow choices quickly by city, price, amenities, and personal requirements, making the browsing experience more focused and practical.</p>
+                        </div>
+                        <div class="why-card">
+                            <h4>Hassle-free booking process</h4>
+                            <p>From viewing photos and reviews to comparing listings and confirming a stay, the booking flow is structured to feel straightforward and supported throughout.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features-section section-block">
+        <div class="container">
+            <div class="section-heading">
+                <p>Features</p>
+                <h3>Built around the parts users actually need.</h3>
+                <p>Each feature is meant to make the decision process lighter, more transparent, and easier to act on.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-xl-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                        <h4>Accommodation search:</h4>
+                        <p>Our user-friendly platform allows you to search for PGs and hostels in different cities and states, filter your search results based on your preferences, and book your accommodation with ease.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-money-bill"></i>
+                        </div>
+                        <h4>Accommodation booking:</h4>
+                        <p>We offer a hassle-free booking process, allowing users to book their accommodation with just a few clicks. Users can view pictures, read reviews from other users, and compare prices before making their booking.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <h4>24/7 customer support:</h4>
+                        <p>Our team is available round the clock to answer your queries, resolve any issues you may face, and ensure that your stay is comfortable and memorable.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fa-regular fa-circle-check"></i>
+                        </div>
+                        <h4>Verified listings:</h4>
+                        <p>We only list verified and reliable PGs and hostels on our platform, ensuring that you have a safe and secure stay wherever you choose to stay.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="call" class="call" style="background: url('/images/city.svg') center; background-size: cover;">
+        <div class="container d-flex align-items-center" style="min-height: 60vh; font-family: 'Poppins', sans-serif;">
+            <div class="d-flex row p-4 flex-md-row flex-column text-white" style="backdrop-filter: blur(1rem) brightness(40%);">
+                <div class="col-lg-9 text-center text-lg-start " style="backdrop-filter: blur(10px)">
+                    <h3 class="">Are you a Property Owner!</h3>
+                    <p>Are you a property owner looking to rent out your PG or hostel? List your property on PG Finder today and reach a wider audience of potential tenants. With our user-friendly platform and verified listings, you can be assured that your property is in safe hands. Start listing your property today and see the bookings roll in!</p>
+                </div>
+                <div class="btn-holder col-lg-3 d-flex align-items-center justify-content-center">
+                    <a role='button' class="btn btn-primary" href="/auth/registration">Create Account!</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="team" class="d-flex flex-column align-items-center bg-dark-subtle p-0 m-0" style="min-height: 80vh; font-family: 'Poppins', sans-serif">
+        <h3 class="display-3 text-center fst-italic fw-bold" style="margin-top: 2rem">Team</h3>
+        <div class="container d-flex justify-content-center align-items-center h-100 flex-column row-gap-5" style="min-height: 60vh">
+            <div class="col-md-4" style="font-family: 'Poppins', sans-serif">
+                <div class="card profile-card-3 shadow-lg" data-aos="flip-left">
+                    <div class="background-block">
+                        <img src="images/proback1.jpg" alt="profile-background" class="background"/>
+                    </div>
+                    <div class="profile-thumb-block">
+                        <img src="/images/shreyas.jpeg" alt="profile-image" class="profile"/>
+                    </div>
+                    <div class="card-content">
+                        <h2>Shreyas Patil<small>Software Developer</small></h2>
+                        <div class="icon-block">
+                            <a href="https://www.linkedin.com/in/shreyaspatil18/" target="_blank"><i class="fa fa-linkedin"></i></a>
+                            <a href="https://github.com/PatilShreyas7103" target="_blank"><i class="fa fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="help" class="contact-section section-block">
+        <div class="container">
+            <div class="contact-shell row g-0 align-items-stretch">
+                <div class="col-lg-5">
+                    <div class="contact-panel">
+                        <p class="about-eyebrow mb-0">Contact Us</p>
+                        <h3>Reach out when you need help choosing the right stay.</h3>
+                        <p>Whether you have a booking question, need platform support, or want help narrowing your options, send a message and the team will get back to you.</p>
+                        <img class="img-fluid" src="/images/contact.jpg" alt="Contact Us">
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <form id='contact-form' action="/contact/" class="contact-form-wrap validation-required h-100" method="post" novalidate>
+                        <div class="form-group mb-3">
+                            <label for="email" class="col-form-label">Email</label>
+                            <div class="col-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <i class="fa fa-address-card"></i>
+                                        </div>
+                                    </div>
+                                    <input id="email" name="email" placeholder="Enter email" type="email" class="form-control" pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="subject" class="col-form-label">Subject</label>
+                            <div class="col-12">
+                                <input id="subject" name="subject" placeholder="Enter subject" type="text" minlength="3" maxlength="100" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label for="content" class="col-form-label">Message</label>
+                            <div class="col-12">
+                                <textarea id="content" name="content" placeholder="Enter Message" minlength="20" maxlength="1000" class="form-control" rows="6" required></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group mb-0">
+                            <div class="d-flex justify-content-start">
+                                <button name="submit" type="submit" class="btn btn-primary contact-submit">Submit Message</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+
+<script>
+    const form = document.getElementById('contact-form');
+
+	form.addEventListener('submit', e => {
+		e.preventDefault();
+
+		const formData = new URLSearchParams(new FormData(form));
+		const url = '/contact/'
+
+        const config = {
+			url: url,
+            data: formData.toString(),
+            headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            method: 'post'
+        }
+
+		axios(config)
+            .then(res => {
+	            addFlash('success', 'Message sent successfully!');
+            })
+            .catch(error => {
+	            console.log(error);
+	            if (error.response.data.errors) {
+		            const errors = error.response.data.errors;
+		            for (let err of errors)
+			            addFlash('error', err.msg);
+	            }
+
+	            else if (error.response.data.error)
+		            addFlash('error', error.response.data.error);
+            })
+    })
+</script>

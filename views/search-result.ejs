@@ -1,0 +1,452 @@
+<!-- SEARCH RESULT PAGE -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<style>
+    .search-results-page {
+        background: linear-gradient(180deg, #f5fafc 0%, #eef4f7 100%);
+        padding: 1rem 0 4rem;
+    }
+
+    .search-panel {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        border-radius: 1.8rem;
+        box-shadow: 0 1.3rem 2.8rem rgba(31, 56, 88, 0.08);
+        padding: 2rem;
+    }
+
+    .search-meta {
+        color: #5e7687;
+        margin-bottom: 1.2rem;
+    }
+
+    .search-toolbar {
+        display: grid;
+        gap: 1.25rem;
+    }
+
+    .search-toolbar-head {
+        text-align: center;
+    }
+
+    .search-toolbar-head h1 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-size: clamp(1.8rem, 3vw, 2.4rem);
+        font-style: italic;
+        margin-bottom: 0.45rem;
+    }
+
+    .search-toolbar-head p {
+        color: #5e7687;
+        margin: 0;
+    }
+
+    .search-primary-row,
+    .search-filter-row {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .search-primary-row {
+        grid-template-columns: 180px minmax(0, 1fr);
+    }
+
+    .search-filter-row {
+        align-items: end;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+    }
+
+    .search-field {
+        display: grid;
+        gap: 0.45rem;
+    }
+
+    .search-field label,
+    .search-sort label {
+        color: #355166;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .search-field .form-control,
+    .search-field .form-select {
+        background: #fbfdfe;
+        border: 1px solid #d9e6ee;
+        border-radius: 1rem;
+        box-shadow: none;
+        min-height: 3.35rem;
+        padding: 0.8rem 1rem;
+    }
+
+    .search-field .input-group-text {
+        background: #eef5f8;
+        border: 1px solid #d9e6ee;
+        border-radius: 1rem 0 0 1rem;
+        color: #35617c;
+        min-width: 3.4rem;
+        justify-content: center;
+    }
+
+    .search-field .input-group .form-control {
+        border-left: 0;
+        border-radius: 0 1rem 1rem 0;
+    }
+
+    .search-sort {
+        background: #f8fbfd;
+        border: 1px solid #d9e6ee;
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        min-height: 3.35rem;
+        justify-content: center;
+        padding: 0.75rem 1rem;
+    }
+
+    .search-sort-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .search-sort-options .form-check {
+        align-items: center;
+        display: flex;
+        gap: 0.45rem;
+        margin: 0;
+    }
+
+    .search-sort-options .form-check-label {
+        color: #4f6778;
+        margin: 0;
+    }
+
+    .search-submit-wrap {
+        display: flex;
+        justify-content: center;
+        padding-top: 0.4rem;
+    }
+
+    .search-submit-btn {
+        border-radius: 999px;
+        min-width: 180px;
+        padding: 0.8rem 1.5rem;
+    }
+
+    .empty-search-state {
+        align-items: center;
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        border-radius: 1.8rem;
+        box-shadow: 0 1.2rem 2.6rem rgba(31, 56, 88, 0.08);
+        display: flex;
+        gap: 2rem;
+        margin: 2rem 0 1rem;
+        padding: 2rem;
+    }
+
+    .empty-search-state img {
+        max-width: min(100%, 320px);
+        width: 100%;
+    }
+
+    .empty-search-copy h2 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-size: clamp(2rem, 4vw, 2.6rem);
+        font-style: italic;
+        margin-bottom: 0.85rem;
+    }
+
+    .empty-search-copy p {
+        color: #5e7687;
+        line-height: 1.85;
+        margin-bottom: 1.2rem;
+    }
+
+    .empty-search-copy ul {
+        color: #4f6778;
+        line-height: 1.8;
+        margin-bottom: 1.4rem;
+        padding-left: 1.2rem;
+    }
+
+    .empty-search-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+    }
+
+    .prop-card {
+        border: 1px solid black;
+        border-left: none;
+        border-right: none;
+        margin-bottom: 2rem;
+        transition: 100ms linear;
+    }
+
+    .prop-card:hover {
+        box-sizing: border-box;
+        border: 3px solid lightblue;
+    }
+
+    .prop-card:hover .id-hover {
+        color: white;
+        background-color: var(--bs-primary);
+    }
+
+    .prop-card:hover .count-hover {
+        color: white;
+        background-color: var(--bs-danger);
+    }
+
+    .id-hover {
+        transition: 100ms linear;
+        background-color: var(--bs-primary-bg-subtle);
+    }
+
+    .count-hover {
+        transition: 100ms linear;
+        background-color: var(--bs-danger-bg-subtle)
+    }
+
+    @media (max-width: 767.98px) {
+        .search-panel {
+            padding: 1.25rem;
+        }
+
+        .search-primary-row,
+        .search-filter-row {
+            grid-template-columns: 1fr;
+        }
+
+        .empty-search-state {
+            flex-direction: column;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .empty-search-copy ul {
+            text-align: left;
+        }
+    }
+
+</style>
+
+<section class="search-results-page">
+    <div class="container">
+    <div class="search-panel">
+    <form action="/property/" id="search-form" method="get" class="mb-3">
+        <div class="search-toolbar">
+            <div class="search-toolbar-head">
+                <h1>Refine your PG search</h1>
+                <p>Adjust the search input, filters, and sorting to narrow results faster.</p>
+            </div>
+
+            <div class="search-primary-row">
+                <div class="search-field">
+                    <label for="search-type">Search Type</label>
+                    <select name="searchType" id="search-type" class="form-select" onchange="modifyInput()">
+                        <option value="text" <%= query.searchType === 'text' && 'selected'%>>Text</option>
+                        <option value="zip" <%= query.searchType === 'zip' && 'selected'%>>ZIP Code</option>
+                    </select>
+                </div>
+                <div class="search-field">
+                    <label for="search-text">Location or ZIP</label>
+                    <input type="text" name="searchText" id="search-text" class="form-control" value="<%= query.searchText %>" required>
+                </div>
+            </div>
+
+            <div class="search-filter-row">
+                <div class="search-field">
+                    <label for="gender">Property Type</label>
+                    <select name="gender" id="gender" class="form-select">
+                        <option value="">All Types</option>
+                        <option value="co" <%= query.gender && query.gender === 'co' && 'selected'%>>Co-Living</option>
+                        <option value="male" <%= query.gender && query.gender === 'male' && 'selected'%>>Male</option>
+                        <option value="female" <%= query.gender && query.gender === 'female' && 'selected' %>>Female</option>
+                    </select>
+                </div>
+
+                <div class="search-field">
+                    <label for="rating">Minimum Rating</label>
+                    <select name="rating" id="rating" class="form-select">
+                        <option value="">Any Rating</option>
+                        <option value="1" <%= query.rating && query.rating === '1' && 'selected'%>>1 star+</option>
+                        <option value="2" <%= query.rating && query.rating === '2' && 'selected'%>>2 star+</option>
+                        <option value="3" <%= query.rating && query.rating === '3' && 'selected'%>>3 star+</option>
+                        <option value="4" <%= query.rating && query.rating === '4' && 'selected'%>>4 star+</option>
+                        <option value="5" <%= query.rating && query.rating === '5' && 'selected'%>>5 star</option>
+                    </select>
+                </div>
+
+                <div class="search-field">
+                    <label for="rate">Maximum Rate</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-rupee"></i></span>
+                        <input type="number" name="rate" id="rate" class="form-control" min="100" max="50000" step="100" value="<%= query.rate %>" placeholder="Enter max price">
+                    </div>
+                </div>
+
+                <div class="search-sort">
+                    <label>Sort by Price</label>
+                    <div class="search-sort-options">
+                        <div class="form-check">
+                            <input type="radio" name="sort" value="asc" id="sortAsc" class="form-check-input" <%= query.sort === 'asc' && 'checked' %>>
+                            <label for="sortAsc" class="form-check-label">Low to High</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input type="radio" name="sort" value="desc" id="sortDsc" class="form-check-input" <%= query.sort === 'desc' && 'checked' %>>
+                            <label for="sortDsc" class="form-check-label">High to Low</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="search-submit-wrap">
+                    <button type="submit" class="btn btn-primary search-submit-btn">Find Homes</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <hr style="all: revert; height: 1px; background-color: rgba(22, 50, 71, 0.15);">
+
+    <div class="col-10 mx-auto search-meta">
+        <div class="breadcrumb mb-0">
+            <span class="breadcrumb-item">Showing <span class="text-primary"><%= results.length %></span> result(s)</span>
+        </div>
+
+        <% if (results.length === 0) { %>
+            <div class="empty-search-state">
+                <img src="/images/no-result-found.png" alt="No results found">
+                <div class="empty-search-copy">
+                    <h2>No matching PGs found yet.</h2>
+                    <p>
+                        There are no properties matching your current search filters for
+                        <strong><%= query.searchText %></strong>.
+                        That usually means the city has no listings yet, or the filters are too narrow.
+                    </p>
+                    <ul>
+                        <li>Try searching with just the city name first.</li>
+                        <li>Remove gender, rating, or price filters and search again.</li>
+                        <li>Use the homes page to browse top cities manually.</li>
+                    </ul>
+                    <div class="empty-search-actions">
+                        <a href="/property/search" class="btn btn-primary">Browse Cities</a>
+                        <button type="button" class="btn btn-outline-primary" onclick="resetFilters()">Clear Filters</button>
+                    </div>
+                </div>
+            </div>
+        <% } else { %>
+        <ul style="list-style: none" class="ps-0">
+            <% for (let res of results) { %>
+            <li>
+                <div class="card prop-card">
+                    <div class="card-header small text-muted py-1 justify-content-between d-flex bg-white">
+                        <span class="px-2 px-md-5 id-hover">Property ID: <%= res.id %></span>
+                        <span class="px-2 px-md-5 count-hover">Interested Count: <%= res.interested %></span>
+                    </div>
+                    <div class="container col-12 p-0 m-0 d-flex flex-md-row flex-column">
+                        <img src="<%= res.images[0] %>" alt="" class="card-img m-2 col-10 col-md-5 col-lg-3 mx-auto" style="aspect-ratio: 1; object-fit: cover">
+                        <div class="card-body col-11 col-md-8">
+                            <h4 class=""><%= res.name %></h4>
+                            <p class="fw-light"><%= res.address.addL1 %>, <%= res.address.addL2 %>, <%= res.address.city %>, <%= res.address.state %></p>
+                            <div class="row d-flex justify-content-start column-gap-2">
+                                <div class="w-auto h5 fw-light">Genders:</div>
+                                <div class="w-auto h5 text-capitalize"><%= res.type %></div>
+                            </div>
+                            <div class="row d-flex justify-content-start column-gap-2">
+                                <div class="w-auto h5 fw-light">Rate:</div>
+                                <div class="w-auto h5" ><%= res.rate %> Rs</div>
+                            </div>
+                            <div class="row d-flex justify-content-start column-gap-2">
+                                <div class="w-auto h5 fw-light">Rating:</div>
+                                <div class="w-auto h5 stars" data-stars="<%= res.rating %>"></div>
+                            </div>
+                            <div class="row d-flex justify-content-start column-gap-2">
+                                <div class="w-auto h5 fw-light">Since:</div>
+                                <div class="w-auto h5"><%= res.since %></div>
+                            </div>
+                            <div class="row d-flex justify-content-start column-gap-2">
+                                <div class="w-auto h5 fw-light">Booking Amount:</div>
+                                <div class="w-auto h5"><%= res.bookingMoney %> Rs.</div>
+                            </div>
+                            <a role="button" class="btn btn-outline-primary" href="/property/<%= res.id %>" target="_blank">See Property!</a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <% } %>
+        </ul>
+
+        <div class="row">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                    <li class="page-item"><a role="button" id="prev-link" class="page-link <%= isFirst && 'disabled' %>" onclick="goto(<%- query.skip - 10 %>)">Previous</a></li>
+                    <li class="page-item"><a role="button" id="next-link" class="page-link <%= isLast && 'disabled' %>" onclick="goto(<%- query.skip + 10 %>)">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+        <% } %>
+    </div>
+    </div>
+    </div>
+</section>
+
+<script>
+	const select = document.getElementById('search-type');
+	const search = document.getElementById('search-text');
+
+	function modifyInput () {
+		if (select.value === 'text')
+			search.removeAttribute('pattern');
+		else
+			search.setAttribute('pattern', '\\d{6}');
+	}
+
+	const form = document.getElementById('search-form');
+
+	form.addEventListener('submit', (e) => {
+        e.preventDefault();
+		const query = new URLSearchParams(new FormData(form)).toString() + "<%- `&skip=${query.skip}` %>" + "<%- `&resCount=${query.resCount}` %>";
+		window.location = '/property?' + query;
+    });
+
+	for (let obj of document.getElementsByClassName('stars'))
+		obj.innerHTML = getStars(obj.dataset.stars);
+
+	function getStars(rating) {
+		let i;
+		rating = Math.round(rating * 2) / 2;
+		let output = [];
+
+		for (i = rating; i >= 1; i--)
+			output.push('<i class="fa fa-star" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+
+		if (i === .5) output.push('<i class="fa fa-star-half-o" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+
+		for (let i = (5 - rating); i >= 1; i--)
+			output.push('<i class="fa fa-star-o" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+
+		return output.join('');
+	}
+
+	function goto (skip) {
+		const query = new URLSearchParams(new FormData(form)).toString() + `&skip=${skip}` + "<%- `&resCount=${query.resCount}` %>";
+		window.location = '/property?' + query;
+    }
+
+    function resetFilters () {
+        const query = new URLSearchParams({
+            searchType: '<%= query.searchType %>',
+            searchText: '<%= query.searchText %>'
+        }).toString();
+        window.location = '/property?' + query;
+    }
+
+
+</script>

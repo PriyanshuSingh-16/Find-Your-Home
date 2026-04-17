@@ -1,0 +1,380 @@
+<!-- USER EDIT FORM -->
+<% layout('layout/boilerplate.ejs') -%>
+<%
+    const hasDob = userInfo.dob instanceof Date && !Number.isNaN(userInfo.dob.getTime());
+    const emergencyContact = userInfo.emergencyContact || {};
+%>
+
+<style>
+    .user-form-page {
+        background: linear-gradient(180deg, #f5fafc 0%, #eef4f7 100%);
+        padding: 1rem 0 4rem;
+    }
+
+    .user-form-shell {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .user-form-card {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        border-radius: 1.8rem;
+        box-shadow: 0 1.3rem 2.8rem rgba(31, 56, 88, 0.08);
+        overflow: hidden;
+    }
+
+    .user-form-hero {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(228, 241, 247, 0.94) 100%);
+        padding: 2.25rem;
+        position: relative;
+    }
+
+    .user-form-hero::before {
+        background: radial-gradient(circle, rgba(186, 220, 235, 0.45) 0%, rgba(186, 220, 235, 0) 72%);
+        content: '';
+        height: 16rem;
+        position: absolute;
+        right: -4rem;
+        top: -4rem;
+        width: 16rem;
+    }
+
+    .user-form-hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .user-form-eyebrow {
+        color: #4c86a8;
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        margin-bottom: 0.8rem;
+        text-transform: uppercase;
+    }
+
+    .user-form-hero h1 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-size: clamp(2rem, 3.6vw, 3rem);
+        font-style: italic;
+        margin-bottom: 0.65rem;
+    }
+
+    .user-form-hero p {
+        color: #597183;
+        margin: 0;
+        max-width: 42rem;
+    }
+
+    .user-form-body {
+        padding: 2rem;
+    }
+
+    .user-form-section + .user-form-section {
+        margin-top: 2rem;
+    }
+
+    .user-form-section h2 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.45rem;
+        margin-bottom: 0.35rem;
+    }
+
+    .user-form-section p {
+        color: #5e7687;
+        margin-bottom: 1.2rem;
+    }
+
+    .user-form-grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .user-form-grid.three {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .user-field {
+        display: grid;
+        gap: 0.45rem;
+    }
+
+    .user-field.full {
+        grid-column: 1 / -1;
+    }
+
+    .user-field label,
+    .user-radio-group > span {
+        color: #355166;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .user-field .form-control {
+        background: #fbfdfe;
+        border: 1px solid #d9e6ee;
+        border-radius: 1rem;
+        box-shadow: none;
+        min-height: 3.35rem;
+        padding: 0.8rem 1rem;
+    }
+
+    .user-field .input-group-text {
+        background: #eef5f8;
+        border: 1px solid #d9e6ee;
+        border-radius: 1rem 0 0 1rem;
+        color: #35617c;
+        min-width: 3.4rem;
+        justify-content: center;
+    }
+
+    .user-field .input-group .form-control {
+        border-left: 0;
+        border-radius: 0 1rem 1rem 0;
+    }
+
+    .user-radio-group {
+        display: grid;
+        gap: 0.8rem;
+    }
+
+    .user-radio-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .user-radio-chip {
+        align-items: center;
+        background: #f8fbfd;
+        border: 1px solid rgba(76, 134, 168, 0.14);
+        border-radius: 999px;
+        display: inline-flex;
+        gap: 0.5rem;
+        min-width: 140px;
+        padding: 0.7rem 1rem;
+    }
+
+    .user-radio-chip .form-check-input {
+        margin: 0;
+        position: static;
+    }
+
+    .user-radio-chip label {
+        color: #4f6778;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .user-submit {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 1.75rem;
+    }
+
+    .user-submit .btn {
+        border-radius: 999px;
+        padding: 0.8rem 1.5rem;
+    }
+
+    @media (max-width: 991.98px) {
+        .user-form-grid,
+        .user-form-grid.three {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .user-form-hero,
+        .user-form-body {
+            padding: 1.35rem;
+        }
+    }
+</style>
+
+<section class="user-form-page">
+    <div class="container">
+        <div class="user-form-shell">
+            <div class="user-form-card user-form-hero">
+                <div class="user-form-hero-content">
+                    <p class="user-form-eyebrow">User Details</p>
+                    <h1>Update your rider profile.</h1>
+                    <p>Edit your personal details, refresh uploaded files, and keep your emergency contact information up to date.</p>
+                </div>
+            </div>
+
+            <div class="user-form-card user-form-body">
+                <form id="form" method="post" action="/rider/<%= userRoleID %>?_method=patch" enctype="multipart/form-data" class="validation-required" novalidate>
+                    <div class="user-form-section">
+                        <h2>Basic Information</h2>
+                        <p>Review and update the details shown on your rider dashboard.</p>
+                        <div class="user-form-grid">
+                            <div class="user-field">
+                                <label for="name">Name</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <i class="fa fa-user"></i>
+                                        </div>
+                                    </div>
+                                    <input id="name" name="name" placeholder="Name" type="text" class="form-control" required="required" value="<%= userInfo.name %>" readonly>
+                                </div>
+                            </div>
+                            <div class="user-field">
+                                <label for="email">Email</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <i class="fa fa-link"></i>
+                                        </div>
+                                    </div>
+                                    <input id="email" name="email" placeholder="Email" type="text" class="form-control" required="required" value="<%= userInfo.email %>" readonly>
+                                </div>
+                            </div>
+                            <div class="user-field">
+                                <label for="phone">Phone</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">+91</div>
+                                    </div>
+                                    <input id="phone" name="phone" placeholder="Enter Phone Number" type="text" class="form-control" required="required" pattern="(7|8|9)\d{9}" value="<%= userInfo.phone %>">
+                                </div>
+                            </div>
+                            <div class="user-field">
+                                <label for="dob">Date of Birth</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <i class="fa fa-birthday-cake"></i>
+                                        </div>
+                                    </div>
+                                    <input id="dob" name="dob" type="date" min="1980-01-01" max="<%= new Date(new Date().getFullYear() - 10, new Date().getMonth(), new Date().getDate()).toLocaleDateString('fr-ca') %>"
+                                           class="form-control" required="required"
+                                           value="<%= hasDob ? new Date(userInfo.dob.getFullYear(), userInfo.dob.getMonth(), userInfo.dob.getDate()).toLocaleDateString('fr-ca') : '' %>">
+                                </div>
+                            </div>
+                            <div class="user-field full">
+                                <div class="user-radio-group">
+                                    <span>Gender</span>
+                                    <div class="user-radio-options">
+                                        <div class="user-radio-chip">
+                                            <input name="gender" id="gender_0" type="radio" class="form-check-input m-0" value="male" <%= userInfo.gender === 'male' ? 'checked' : ''%> required>
+                                            <label for="gender_0">Male</label>
+                                        </div>
+                                        <div class="user-radio-chip">
+                                            <input name="gender" id="gender_1" type="radio" class="form-check-input m-0" value="female" <%= userInfo.gender === 'female' ? 'checked' : ''%>>
+                                            <label for="gender_1">Female</label>
+                                        </div>
+                                        <div class="user-radio-chip">
+                                            <input name="gender" id="gender_2" type="radio" class="form-check-input m-0" value="trans" <%= userInfo.gender === 'trans' ? 'checked' : ''%>>
+                                            <label for="gender_2">Trans</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="user-field full">
+                                <label for="occupation">Occupation</label>
+                                <input id="occupation" name="occupation" placeholder="Software Engineer, Policeman, Student, etc." type="text" class="form-control" required="required" value="<%= userInfo.occupation %>">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-form-section">
+                        <h2>File Uploads</h2>
+                        <p>Replace your existing uploads only if you want to update them.</p>
+                        <div class="user-form-grid">
+                            <div class="user-field">
+                                <label for="profile-pic">Profile Picture</label>
+                                <input type="file" name="profile-pic" class="form-control">
+                            </div>
+                            <div class="user-field">
+                                <label for="covid-cert">Covid Certificate</label>
+                                <input type="file" name="covid-cert" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-form-section">
+                        <h2>Emergency Contact</h2>
+                        <p>Keep this information updated for quick access if needed.</p>
+                        <div class="user-form-grid three">
+                            <div class="user-field">
+                                <label for="emContactName">Name</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <i class="fa fa-user-circle"></i>
+                                        </div>
+                                    </div>
+                                    <input id="emContactName" name="emContactName" placeholder="Emergency Contact Name" type="text" class="form-control" required="required" value="<%= emergencyContact.name || '' %>">
+                                </div>
+                            </div>
+                            <div class="user-field">
+                                <label for="emContactRelation">Relation</label>
+                                <input id="emContactRelation" name="emContactRelation" placeholder="Emergency Contact Relation" type="text" class="form-control" required="required" value="<%= emergencyContact.relation || '' %>">
+                            </div>
+                            <div class="user-field">
+                                <label for="emContactPhone">Phone Number</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">+91</div>
+                                    </div>
+                                    <input id="emContactPhone" name="emContactPhone" placeholder="Emergency Contact Phone" type="text" class="form-control" required="required" pattern="(7|8|9)\d{9}" value="<%= emergencyContact.phone || '' %>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-submit">
+                        <button name="submit" type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const form = document.getElementById('form');
+
+	form.addEventListener('submit', e => {
+		e.preventDefault();
+
+		if (!form.checkValidity())
+			return;
+
+		const url = '/rider/<%= userRoleID %>?_method=patch';
+		const formData = new FormData(form);
+
+		const config = {
+			url: url,
+			method: 'post',
+			data: formData,
+		};
+
+		axios(config)
+			.then((response) => {
+				addFlash('success', 'Your data has been successfully updated!');
+				setTimeout(() => {
+					window.location = '/rider/<%= userRoleID %>';
+                }, 2000);
+			})
+			.catch((error) => {
+				console.error(error);
+				const errors = error.response?.data?.errors;
+				if (errors && errors.length > 0) {
+					for (const err of errors)
+						addFlash('error', err.msg);
+					return;
+				}
+
+				const message = error.response?.data?.error || error.message || 'Could not update your profile.';
+				addFlash('error', message);
+			});
+    });
+</script>

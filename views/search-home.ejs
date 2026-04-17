@@ -1,0 +1,341 @@
+<!-- SEARCH HOME-PAGE -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<style>
+    .search-home-page {
+        background: linear-gradient(180deg, #f5fafc 0%, #eef4f7 100%);
+        padding: 1rem 0 5rem;
+    }
+
+    .search-hero {
+        background:
+            linear-gradient(135deg, rgba(20, 50, 71, 0.78) 0%, rgba(45, 115, 150, 0.66) 100%),
+            url('/images/s-home-back.jpg') center/cover no-repeat;
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        border-radius: 2rem;
+        box-shadow: 0 1.6rem 3rem rgba(31, 56, 88, 0.12);
+        color: #fff;
+        overflow: hidden;
+        padding: 3rem;
+        position: relative;
+    }
+
+    .search-hero::before {
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 72%);
+        content: '';
+        height: 18rem;
+        position: absolute;
+        right: -4rem;
+        top: -4rem;
+        width: 18rem;
+    }
+
+    .search-hero > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .search-hero-copy {
+        max-width: 42rem;
+    }
+
+    .search-hero-copy p:first-child {
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+    }
+
+    .search-hero-copy h1 {
+        font-family: 'Poppins', sans-serif;
+        font-size: clamp(2.2rem, 4vw, 3.5rem);
+        font-style: italic;
+        line-height: 1.15;
+        margin-bottom: 1rem;
+    }
+
+    .search-hero-copy blockquote {
+        border-left: 3px solid rgba(255, 255, 255, 0.35);
+        color: rgba(255, 255, 255, 0.92);
+        font-size: 1.05rem;
+        line-height: 1.9;
+        margin: 0 0 0.8rem;
+        padding-left: 1rem;
+    }
+
+    .search-hero-copy .quote-author {
+        color: rgba(255, 255, 255, 0.76);
+        margin-bottom: 2rem;
+    }
+
+    .search-searchbox {
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 1.5rem;
+        max-width: 44rem;
+        padding: 1rem;
+    }
+
+    .search-searchbox .form-control,
+    .search-searchbox .form-select {
+        border: 0;
+        min-height: 3.2rem;
+    }
+
+    .search-searchbox .btn {
+        border-radius: 999px;
+        padding: 0.75rem 1.4rem;
+    }
+
+    .search-section {
+        padding-top: 4rem;
+    }
+
+    .search-section-head {
+        margin: 0 auto 2.5rem;
+        max-width: 760px;
+        text-align: center;
+    }
+
+    .search-section-head p:first-child {
+        color: #4c86a8;
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        margin-bottom: 0.85rem;
+        text-transform: uppercase;
+    }
+
+    .search-section-head h2 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-size: clamp(2rem, 3.6vw, 3rem);
+        font-style: italic;
+        margin-bottom: 0.85rem;
+    }
+
+    .search-section-head p:last-child {
+        color: #5e7687;
+        line-height: 1.8;
+        margin: 0;
+    }
+
+    .city-grid,
+    .property-grid {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .city-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+
+    .property-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .city-card,
+    .property-card {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        border-radius: 1.6rem;
+        box-shadow: 0 1.1rem 2.4rem rgba(31, 56, 88, 0.07);
+        color: inherit;
+        overflow: hidden;
+        text-decoration: none;
+        transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .city-card:hover,
+    .city-card:focus,
+    .property-card:hover,
+    .property-card:focus {
+        border-color: rgba(45, 115, 150, 0.24);
+        box-shadow: 0 1.5rem 2.7rem rgba(31, 56, 88, 0.11);
+        color: inherit;
+        text-decoration: none;
+        transform: translateY(-4px);
+    }
+
+    .city-card img {
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        width: 100%;
+    }
+
+    .city-card-body {
+        padding: 1rem 1rem 1.1rem;
+        text-align: center;
+    }
+
+    .city-card-body h3 {
+        color: #17344b;
+        font-size: 1.05rem;
+        margin: 0 0 0.35rem;
+    }
+
+    .city-card-body p {
+        color: #637b8d;
+        font-size: 0.92rem;
+        margin: 0;
+    }
+
+    .property-card img {
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        width: 100%;
+    }
+
+    .property-card-body {
+        padding: 1.15rem;
+    }
+
+    .property-card-body h3 {
+        color: #17344b;
+        font-size: 1.05rem;
+        margin-bottom: 0.45rem;
+    }
+
+    .property-card-body p {
+        color: #637b8d;
+        font-size: 0.94rem;
+        margin: 0;
+    }
+
+    .empty-properties {
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px dashed rgba(76, 134, 168, 0.28);
+        border-radius: 1.6rem;
+        color: #567082;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    @media (max-width: 991.98px) {
+        .search-hero {
+            padding: 2rem;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .search-searchbox {
+            padding: 0.85rem;
+        }
+    }
+</style>
+
+<%
+    const cityCards = [
+        {name: 'Bengaluru', image: '/images/bengaluru.jpg'},
+        {name: 'Pune', image: '/images/pune.png'},
+        {name: 'Hyderabad', image: '/images/hyderabad.webp'},
+        {name: 'Gurgaon', image: '/images/gurgaon.jpg'},
+        {name: 'Noida', image: '/images/noida.jpg'},
+        {name: 'Mumbai', image: '/images/mumbai.jpg'},
+        {name: 'Chennai', image: '/images/chennai.jpg'},
+        {name: 'Delhi', image: '/images/delhi.jpg'},
+        {name: 'Ahmedabad', image: '/images/ahmedabad.jpg'},
+        {name: 'Kolkata', image: '/images/kolkata.jpeg'},
+        {name: 'Jaipur', image: '/images/jaipur.jpg'},
+        {name: 'Bhopal', image: '/images/bhopal.jpg'}
+    ];
+%>
+
+<section class="search-home-page">
+    <div class="container">
+        <section class="search-hero">
+            <div class="search-hero-copy">
+                <p>Find Your Next Stay</p>
+                <h1>Search homes across top cities with a calmer start.</h1>
+                <blockquote>
+                    "Where you live determines how you live. What you do determines how well you live."
+                </blockquote>
+                <p class="quote-author">Lou Holtz</p>
+            </div>
+
+            <form action="/property" method="get" class="search-searchbox">
+                <div class="row g-2 align-items-center">
+                    <div class="col-sm-3">
+                        <select name="searchType" id="search-type" class="form-select" onchange="modifyInput()">
+                            <option value="text">Text</option>
+                            <option value="zip">ZIP Code</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" name="searchText" id="search-text" class="form-control" minlength="2" maxlength="32" placeholder="Search by city, area, or ZIP code" required>
+                    </div>
+                    <div class="col-sm-3 d-grid">
+                        <button type="submit" class="btn btn-primary">Find Homes</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <section class="search-section">
+            <div class="search-section-head">
+                <p>Top Cities</p>
+                <h2>Browse by city before you narrow the details.</h2>
+                <p>Jump into the cities people search most often and start from a cleaner, more direct shortlist.</p>
+            </div>
+
+            <div class="city-grid">
+                <% for (let city of cityCards) { %>
+                    <a href="/property?searchType=text&searchText=<%= city.name %>" class="city-card">
+                        <img src="<%= city.image %>" alt="<%= city.name %>">
+                        <div class="city-card-body">
+                            <h3><%= city.name %></h3>
+                            <p>Explore PGs in <%= city.name %></p>
+                        </div>
+                    </a>
+                <% } %>
+            </div>
+        </section>
+
+        <section class="search-section">
+            <div class="search-section-head">
+                <p>Top Properties</p>
+                <h2>Featured properties worth checking first.</h2>
+                <p>These highlighted stays surface first when curated data is available, so the page stays useful even before a full search.</p>
+            </div>
+
+            <% if (topProperty && topProperty.length) { %>
+                <div class="property-grid">
+                    <% for (let prop of topProperty) { %>
+                        <a href="/property/<%= prop.id %>" class="property-card">
+                            <img src="<%= prop.img %>" alt="<%= prop.name %>">
+                            <div class="property-card-body">
+                                <h3><%= prop.name %></h3>
+                                <p>Open property details and continue to the full listing page.</p>
+                            </div>
+                        </a>
+                    <% } %>
+                </div>
+            <% } else { %>
+                <div class="empty-properties">
+                    Top properties are not available yet. You can still search by city or ZIP code above.
+                </div>
+            <% } %>
+        </section>
+    </div>
+</section>
+
+<script>
+    const select = document.getElementById('search-type');
+    const search = document.getElementById('search-text');
+
+    function modifyInput () {
+        if (select.value === 'text') {
+            search.removeAttribute('pattern');
+            search.setAttribute('minlength', '2');
+            search.setAttribute('maxlength', '32');
+            search.setAttribute('placeholder', 'Search by city, area, or ZIP code');
+        } else {
+            search.setAttribute('pattern', '\\d{6}');
+            search.setAttribute('minlength', '6');
+            search.setAttribute('maxlength', '6');
+            search.setAttribute('placeholder', 'Enter 6-digit ZIP code');
+        }
+    }
+</script>

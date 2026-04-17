@@ -1,0 +1,471 @@
+<!-- RIDER DASHBOARD -->
+<% layout('layout/boilerplate.ejs') -%>
+<%
+    const hasDob = userInfo.dob instanceof Date && !Number.isNaN(userInfo.dob.getTime());
+    const emergencyContact = userInfo.emergencyContact || {};
+    const profilePic = userInfo.profilePic || '/images/man.svg';
+%>
+
+<style>
+    .rider-dashboard-page {
+        background: linear-gradient(180deg, #f5fafc 0%, #eef4f7 100%);
+        padding: 1rem 0 4rem;
+    }
+
+    .dashboard-shell {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .dashboard-card {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        border-radius: 1.8rem;
+        box-shadow: 0 1.3rem 2.8rem rgba(31, 56, 88, 0.08);
+        overflow: hidden;
+    }
+
+    .dashboard-hero {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(228, 241, 247, 0.94) 100%);
+        padding: 2.25rem;
+        position: relative;
+    }
+
+    .dashboard-hero::before {
+        background: radial-gradient(circle, rgba(186, 220, 235, 0.45) 0%, rgba(186, 220, 235, 0) 72%);
+        content: '';
+        height: 16rem;
+        position: absolute;
+        right: -4rem;
+        top: -4rem;
+        width: 16rem;
+    }
+
+    .dashboard-hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .dashboard-eyebrow {
+        color: #4c86a8;
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        margin-bottom: 0.8rem;
+        text-transform: uppercase;
+    }
+
+    .dashboard-hero h1 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-size: clamp(2rem, 3.6vw, 3rem);
+        font-style: italic;
+        margin-bottom: 0.65rem;
+    }
+
+    .dashboard-hero p {
+        color: #597183;
+        margin: 0;
+    }
+
+    .dashboard-profile {
+        align-items: center;
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: 280px minmax(0, 1fr);
+    }
+
+    .dashboard-profile-card {
+        align-items: center;
+        background: linear-gradient(180deg, rgba(245, 250, 252, 0.95) 0%, rgba(233, 243, 247, 0.95) 100%);
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        justify-content: center;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .dashboard-avatar {
+        aspect-ratio: 1 / 1;
+        border: 3px solid rgba(255, 255, 255, 0.96);
+        border-radius: 50%;
+        box-shadow: 0 1rem 1.8rem rgba(31, 56, 88, 0.14);
+        object-fit: cover;
+        width: 150px;
+    }
+
+    .dashboard-profile-card h2 {
+        color: #163247;
+        font-size: 1.45rem;
+        margin: 0;
+    }
+
+    .dashboard-profile-card p {
+        color: #637b8d;
+        margin: 0;
+    }
+
+    .dashboard-profile-card .btn {
+        border-radius: 999px;
+        margin-top: 0.4rem;
+        padding: 0.7rem 1.25rem;
+    }
+
+    .dashboard-details {
+        padding: 2rem;
+    }
+
+    .dashboard-details-grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-detail {
+        background: #f8fbfd;
+        border: 1px solid rgba(76, 134, 168, 0.12);
+        border-radius: 1.2rem;
+        padding: 1rem 1.1rem;
+    }
+
+    .dashboard-detail-label {
+        color: #597183;
+        display: block;
+        font-size: 0.88rem;
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+        text-transform: uppercase;
+    }
+
+    .dashboard-detail-value {
+        color: #17344b;
+        margin: 0;
+        word-break: break-word;
+    }
+
+    .dashboard-detail-value a {
+        color: #2d7396;
+        text-decoration: none;
+    }
+
+    .dashboard-detail-value a:hover,
+    .dashboard-detail-value a:focus {
+        text-decoration: underline;
+    }
+
+    .dashboard-tabs {
+        padding: 2rem;
+    }
+
+    .dashboard-tabs .nav {
+        background: #f1f7fa;
+        border-radius: 999px;
+        display: inline-flex;
+        gap: 0.5rem;
+        padding: 0.45rem;
+    }
+
+    .dashboard-tabs .nav-link {
+        border: 0;
+        border-radius: 999px;
+        color: #4f6778;
+        padding: 0.75rem 1.3rem;
+    }
+
+    .dashboard-tabs .nav-link.active {
+        background: #2d7396;
+        color: #fff;
+    }
+
+    .dashboard-tab-pane {
+        padding-top: 1.5rem;
+    }
+
+    .dashboard-empty {
+        background: #f8fbfd;
+        border: 1px dashed rgba(76, 134, 168, 0.24);
+        border-radius: 1.4rem;
+        color: #5e7687;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .dashboard-list {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .dashboard-item {
+        background: #fff;
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        border-radius: 1.4rem;
+        box-shadow: 0 0.9rem 1.8rem rgba(31, 56, 88, 0.06);
+        overflow: hidden;
+    }
+
+    .dashboard-item-top {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: space-between;
+        padding: 0.9rem 1rem;
+    }
+
+    .dashboard-item-badge {
+        background: #eef5f8;
+        border-radius: 999px;
+        color: #31546a;
+        font-size: 0.85rem;
+        padding: 0.35rem 0.8rem;
+    }
+
+    .dashboard-status {
+        border-radius: 999px;
+        color: #fff;
+        font-size: 0.85rem;
+        padding: 0.35rem 0.8rem;
+    }
+
+    .status-pending {
+        background: #6c757d;
+    }
+
+    .status-declined {
+        background: #dc3545;
+    }
+
+    .status-accepted {
+        background: #198754;
+    }
+
+    .dashboard-item-body {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: 180px minmax(0, 1fr);
+        padding: 0 1rem 1rem;
+    }
+
+    .dashboard-item-image {
+        aspect-ratio: 1 / 1;
+        border-radius: 1.1rem;
+        object-fit: cover;
+        width: 100%;
+    }
+
+    .dashboard-item-content h3 {
+        color: #17344b;
+        font-size: 1.2rem;
+        margin-bottom: 0.35rem;
+    }
+
+    .dashboard-item-content p {
+        color: #5e7687;
+        line-height: 1.7;
+        margin-bottom: 0.85rem;
+    }
+
+    .dashboard-inline-meta {
+        color: #4f6778;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1rem;
+        margin-bottom: 0.85rem;
+    }
+
+    .dashboard-comment {
+        background: #f8fbfd;
+        border: 1px solid rgba(76, 134, 168, 0.12);
+        border-radius: 1rem;
+        color: #5d7486;
+        margin-bottom: 0.9rem;
+        padding: 0.8rem 0.95rem;
+    }
+
+    .dashboard-item-actions .btn {
+        border-radius: 999px;
+    }
+
+    @media (max-width: 991.98px) {
+        .dashboard-profile,
+        .dashboard-item-body {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-details-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .dashboard-hero,
+        .dashboard-profile-card,
+        .dashboard-details,
+        .dashboard-tabs {
+            padding: 1.35rem;
+        }
+
+        .dashboard-item-top {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>
+
+<section class="rider-dashboard-page">
+    <div class="container">
+        <div class="dashboard-shell">
+            <div class="dashboard-card dashboard-hero">
+                <div class="dashboard-hero-content">
+                    <p class="dashboard-eyebrow">Rider Dashboard</p>
+                    <h1>Welcome back, <%= userInfo.name %>.</h1>
+                    <p>Review your profile details, track bookings, and revisit saved properties from one place.</p>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="dashboard-profile">
+                    <div class="dashboard-profile-card">
+                        <img src="<%= profilePic %>" alt="avatar" class="dashboard-avatar">
+                        <h2><%= userInfo.name %></h2>
+                        <p><%= userInfo.occupation || 'Occupation not added yet' %></p>
+                        <% if (userInfo.id === userRoleID) { %>
+                            <a role="button" class="btn btn-primary" href="/rider/<%= userRoleID %>/edit">Edit Profile</a>
+                        <% } %>
+                    </div>
+
+                    <div class="dashboard-details">
+                        <div class="dashboard-details-grid">
+                            <div class="dashboard-detail">
+                                <span class="dashboard-detail-label">Full Name</span>
+                                <p class="dashboard-detail-value"><%= userInfo.name %></p>
+                            </div>
+                            <div class="dashboard-detail">
+                                <span class="dashboard-detail-label">Email</span>
+                                <p class="dashboard-detail-value"><%= userInfo.email %></p>
+                            </div>
+                            <div class="dashboard-detail">
+                                <span class="dashboard-detail-label">Phone</span>
+                                <p class="dashboard-detail-value"><%= userInfo.phone ? `+91 ${userInfo.phone}` : 'Not added yet' %></p>
+                            </div>
+                            <div class="dashboard-detail">
+                                <span class="dashboard-detail-label">Gender</span>
+                                <p class="dashboard-detail-value text-capitalize"><%= userInfo.gender || 'Not added yet' %></p>
+                            </div>
+                            <div class="dashboard-detail">
+                                <span class="dashboard-detail-label">Date of Birth</span>
+                                <p class="dashboard-detail-value"><%= hasDob ? userInfo.dob.toLocaleDateString('fr') : 'Not added yet' %></p>
+                            </div>
+                            <div class="dashboard-detail">
+                                <span class="dashboard-detail-label">Covid Certificate</span>
+                                <p class="dashboard-detail-value">
+                                    <% if (userInfo.covidCert) { %>
+                                        Uploaded | <a href="<%= userInfo.covidCert %>" target="_blank">View File</a>
+                                    <% } else { %>
+                                        Not uploaded yet
+                                    <% } %>
+                                </p>
+                            </div>
+                            <div class="dashboard-detail" style="grid-column: 1 / -1;">
+                                <span class="dashboard-detail-label">Emergency Contact</span>
+                                <p class="dashboard-detail-value">
+                                    <%= emergencyContact.name || 'Not added yet' %><br>
+                                    <%= emergencyContact.phone || 'Not added yet' %><br>
+                                    <%= emergencyContact.relation || 'Not added yet' %>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card dashboard-tabs">
+                <ul class="nav nav-pills" id="myTab" role="tablist">
+                    <li role="presentation">
+                        <button class="nav-link active" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings" type="button" role="tab" aria-controls="bookings" aria-selected="true">Bookings</button>
+                    </li>
+                    <li role="presentation">
+                        <button class="nav-link" id="likes-tab" data-bs-toggle="tab" data-bs-target="#likes" type="button" role="tab" aria-controls="likes" aria-selected="false">Liked Properties</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active dashboard-tab-pane" id="bookings" role="tabpanel" aria-labelledby="bookings-tab">
+                        <% if (userInfo.bookings.length === 0) { %>
+                            <div class="dashboard-empty">No bookings yet. Start exploring properties and make your first booking.</div>
+                        <% } else { %>
+                            <div class="dashboard-list">
+                                <% for (let book of userInfo.bookings) { %>
+                                    <div class="dashboard-item">
+                                        <div class="dashboard-item-top">
+                                            <span class="dashboard-item-badge">Booking ID: <%= book.id %></span>
+                                            <span class="dashboard-status <%= book.res === undefined ? 'status-pending' : book.res === false ? 'status-declined' : 'status-accepted' %>">
+                                                <% if (book.res === undefined) { %>
+                                                    Pending
+                                                <% } else if (book.res === false) { %>
+                                                    Declined
+                                                <% } else { %>
+                                                    Accepted
+                                                <% } %>
+                                            </span>
+                                        </div>
+                                        <div class="dashboard-item-body">
+                                            <img src="<%= (book.property.images && book.property.images[0]) || '/images/party.png' %>" alt="<%= book.property.name %>" class="dashboard-item-image">
+                                            <div class="dashboard-item-content">
+                                                <h3><%= book.property.name %></h3>
+                                                <p><%= book.property.address.addL1 %>, <%= book.property.address.addL2 %>, <%= book.property.address.city %>, <%= book.property.address.state %></p>
+                                                <div class="dashboard-inline-meta">
+                                                    <span>Status date: <%= book.date.toLocaleDateString('en') %></span>
+                                                    <span>Booking amount: <%= book.property.bookingMoney %> Rs.</span>
+                                                    <% if (book.res === false) { %>
+                                                        <span>Refund to be initiated</span>
+                                                    <% } %>
+                                                </div>
+                                                <div class="dashboard-comment">
+                                                    <strong>Comment:</strong> <%= book.comment ? book.comment : 'No comment yet.' %>
+                                                </div>
+                                                <div class="dashboard-item-actions">
+                                                    <a href="/property/<%= book.property.id %>" target="_blank" class="btn btn-primary">See Property</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <div class="tab-pane fade dashboard-tab-pane" id="likes" role="tabpanel" aria-labelledby="likes-tab">
+                        <% if (userInfo.likes.length === 0) { %>
+                            <div class="dashboard-empty">No liked properties yet. Save the stays you want to revisit here.</div>
+                        <% } else { %>
+                            <div class="dashboard-list">
+                                <% for (let prop of userInfo.likes) { %>
+                                    <div class="dashboard-item">
+                                        <div class="dashboard-item-top">
+                                            <span class="dashboard-item-badge">Property ID: <%= prop.id %></span>
+                                        </div>
+                                        <div class="dashboard-item-body">
+                                            <img src="<%= (prop.images && prop.images[0]) || '/images/party.png' %>" alt="<%= prop.name %>" class="dashboard-item-image">
+                                            <div class="dashboard-item-content">
+                                                <h3><%= prop.name %></h3>
+                                                <p><%= prop.address.addL1 %>, <%= prop.address.addL2 %>, <%= prop.address.city %>, <%= prop.address.state %></p>
+                                                <div class="dashboard-inline-meta">
+                                                    <span>Rate: <%= prop.rate %> Rs.</span>
+                                                    <span class="text-capitalize">Type: <%= prop.type %></span>
+                                                    <span>Booking amount: <%= prop.bookingMoney %> Rs.</span>
+                                                </div>
+                                                <div class="dashboard-item-actions">
+                                                    <a href="/property/<%= prop.id %>" target="_blank" class="btn btn-primary">See Property</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
