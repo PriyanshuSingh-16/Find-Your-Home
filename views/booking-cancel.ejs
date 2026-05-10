@@ -1,0 +1,218 @@
+<% layout('layout/boilerplate.ejs') -%>
+
+<style>
+    .cancel-page {
+        background: linear-gradient(180deg, #f5fafc 0%, #eef4f7 100%);
+        padding: 1rem 0 4rem;
+    }
+
+    .cancel-shell {
+        max-width: 860px;
+        margin: 0 auto;
+    }
+
+    .cancel-card {
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        border-radius: 1.8rem;
+        box-shadow: 0 1.3rem 2.8rem rgba(31, 56, 88, 0.08);
+        overflow: hidden;
+    }
+
+    .cancel-head {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(252, 237, 237, 0.98) 100%);
+        border-bottom: 1px solid rgba(220, 53, 69, 0.12);
+        padding: 2rem;
+    }
+
+    .cancel-head p {
+        color: #b44a57;
+        font-size: 0.88rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        margin-bottom: 0.55rem;
+        text-transform: uppercase;
+    }
+
+    .cancel-head h1 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-style: italic;
+        margin: 0 0 0.7rem;
+    }
+
+    .cancel-head .lead {
+        color: #60798a;
+        margin: 0;
+    }
+
+    .cancel-body {
+        padding: 2rem;
+    }
+
+    .cancel-warning {
+        background: #fff4e5;
+        border: 1px solid #f3d4a0;
+        border-radius: 1.2rem;
+        color: #8a5a16;
+        margin-bottom: 1.25rem;
+        padding: 1rem 1.1rem;
+    }
+
+    .cancel-summary {
+        background: #f8fbfd;
+        border: 1px solid rgba(76, 134, 168, 0.12);
+        border-radius: 1.2rem;
+        display: grid;
+        gap: 0.9rem;
+        margin-bottom: 1.25rem;
+        padding: 1.1rem;
+    }
+
+    .cancel-summary-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .cancel-summary-row span:first-child {
+        color: #5f7788;
+    }
+
+    .cancel-summary-row strong {
+        color: #17344b;
+    }
+
+    .cancel-body textarea {
+        background: #fbfdfe;
+        border: 1px solid #d9e6ee;
+        border-radius: 1rem;
+        min-height: 150px;
+        padding: 0.9rem 1rem;
+        width: 100%;
+    }
+
+    .cancel-actions {
+        display: flex;
+        gap: 0.8rem;
+        justify-content: flex-end;
+        margin-top: 1.2rem;
+    }
+
+    .cancel-actions .btn {
+        border-radius: 999px;
+        padding: 0.8rem 1.4rem;
+    }
+
+    @media (max-width: 575.98px) {
+        .cancel-head,
+        .cancel-body {
+            padding: 1.35rem;
+        }
+
+        .cancel-summary-row,
+        .cancel-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<section class="cancel-page">
+    <div class="container">
+        <div class="cancel-shell">
+            <div class="cancel-card">
+                <div class="cancel-head">
+                    <p>Cancellation</p>
+                    <h1>Cancel this confirmed booking?</h1>
+                    <p class="lead">This action is final. The booking amount will not be refunded once you confirm cancellation.</p>
+                </div>
+
+                <div class="cancel-body">
+                    <div class="cancel-warning">
+                        Are you sure you want to cancel this booking? The booking amount already paid for this stay will not be refunded.
+                    </div>
+
+                    <div class="cancel-summary">
+                        <div class="cancel-summary-row">
+                            <span>Property</span>
+                            <strong><%= booking.property.name %></strong>
+                        </div>
+                        <div class="cancel-summary-row">
+                            <span>Booking ID</span>
+                            <strong><%= booking.id %></strong>
+                        </div>
+                        <div class="cancel-summary-row">
+                            <span>Move-in Date</span>
+                            <strong><%= booking.checkInDate ? formatDate(booking.checkInDate) : 'Not available' %></strong>
+                        </div>
+                        <div class="cancel-summary-row">
+                            <span>Rooms</span>
+                            <strong><%= booking.roomsBooked || 1 %></strong>
+                        </div>
+                        <div class="cancel-summary-row">
+                            <span>Booking Amount</span>
+                            <strong>₹ <%= booking.property.bookingMoney %></strong>
+                        </div>
+                    </div>
+
+                    <form id="cancel-booking-form">
+                        <label class="form-label" for="reason">Reason for cancellation</label>
+                        <textarea id="reason" name="reason" minlength="10" maxlength="1000" placeholder="Tell the provider why you are cancelling this booking..." required></textarea>
+
+                        <div style="background: #fff4e5; border: 1px solid #f3d4a0; border-radius: 1.2rem; padding: 1rem 1.1rem; margin-top: 1rem; margin-bottom: 1rem;">
+                            <div class="form-check" style="margin: 0;">
+                                <input id="cancelTermsCheckbox" name="cancelTermsCheckbox" type="checkbox" class="form-check-input" required>
+                                <label for="cancelTermsCheckbox" class="form-check-label" style="margin-left: 0.5rem; color: #8a5a16; font-weight: 500;">
+                                    I understand that the booking amount will not be refunded and I confirm my cancellation request.
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="cancel-actions">
+                            <a href="/rider/<%= userRoleID %>" class="btn btn-outline-secondary">Go Back</a>
+                            <button type="submit" class="btn btn-danger">Confirm Cancellation</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const cancelBookingForm = document.getElementById('cancel-booking-form');
+    const cancelTermsCheckbox = document.getElementById('cancelTermsCheckbox');
+
+    cancelBookingForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        if (!cancelTermsCheckbox.checked) {
+            addFlash('error', 'Please acknowledge and check the terms and conditions to confirm cancellation.');
+            return;
+        }
+
+        const reason = cancelBookingForm.reason.value.trim();
+        if (reason.length < 10) {
+            addFlash('error', 'Please enter a cancellation reason with at least 10 characters.');
+            return;
+        }
+
+        axios({
+            url: '/booking/<%= booking.id %>/cancel',
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            data: new URLSearchParams({reason}).toString()
+        })
+            .then((res) => {
+                addFlash('success', res.data.success || 'Booking cancelled successfully.');
+                setTimeout(() => {
+                    window.location = '/rider/<%= userRoleID %>';
+                }, 1200);
+            })
+            .catch((err) => {
+                addFlash('error', err.response?.data?.error || 'Could not cancel booking.');
+            });
+    });
+</script>

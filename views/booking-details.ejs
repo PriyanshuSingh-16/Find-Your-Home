@@ -1,0 +1,469 @@
+<!-- BOOKING DETAILS -->
+<% layout('layout/boilerplate.ejs') -%>
+<%
+    const heroImage = property.images && property.images.length > 0 ? property.images[0] : '/images/stayvista-logo.png';
+    const propertyType = property.type ? property.type.substring(0, 1).toUpperCase() + property.type.substring(1) : 'Stay';
+%>
+
+<style>
+    .booking-page {
+        background: linear-gradient(180deg, #f5fafc 0%, #eef4f7 100%);
+        min-height: calc(100vh - 120px);
+        padding: 1rem 0 4rem;
+    }
+
+    .booking-shell {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: minmax(0, 1fr) minmax(360px, 0.92fr);
+    }
+
+    .booking-card,
+    .booking-side {
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        border-radius: 1.9rem;
+        box-shadow: 0 1.4rem 2.8rem rgba(31, 56, 88, 0.08);
+        overflow: hidden;
+    }
+
+    .booking-card {
+        padding: 2rem;
+    }
+
+    .booking-side {
+        background: linear-gradient(150deg, rgba(255, 255, 255, 0.94) 0%, rgba(224, 239, 246, 0.9) 100%);
+        padding: 1.5rem;
+        position: relative;
+    }
+
+    .booking-side::before {
+        background: radial-gradient(circle, rgba(186, 220, 235, 0.45) 0%, rgba(186, 220, 235, 0) 72%);
+        content: '';
+        height: 18rem;
+        position: absolute;
+        right: -4rem;
+        top: -4rem;
+        width: 18rem;
+    }
+
+    .booking-side-inner {
+        position: relative;
+        z-index: 1;
+    }
+
+    .booking-eyebrow {
+        color: #4c86a8;
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        margin-bottom: 0.9rem;
+        text-transform: uppercase;
+    }
+
+    .booking-card h1,
+    .booking-side h2 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-style: italic;
+    }
+
+    .booking-card h1 {
+        font-size: clamp(2rem, 4vw, 3rem);
+        margin-bottom: 0.6rem;
+    }
+
+    .booking-subtitle,
+    .booking-side p {
+        color: #5e7687;
+        line-height: 1.8;
+    }
+
+    .booking-form {
+        display: grid;
+        gap: 1.3rem;
+        margin-top: 1.6rem;
+    }
+
+    .booking-grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .booking-field {
+        display: grid;
+        gap: 0.45rem;
+    }
+
+    .booking-field.full {
+        grid-column: 1 / -1;
+    }
+
+    .booking-field label {
+        color: #355166;
+        font-size: 0.92rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .booking-field .form-control {
+        background: #fbfdfe;
+        border: 1px solid #d9e6ee;
+        border-radius: 1rem;
+        box-shadow: none;
+        min-height: 3.35rem;
+        padding: 0.8rem 1rem;
+    }
+
+    .booking-help {
+        color: #6b8191;
+        font-size: 0.85rem;
+        line-height: 1.65;
+        margin: 0;
+    }
+
+    .booking-check-card,
+    .booking-otp-card {
+        background: #f9fcfd;
+        border: 1px solid rgba(76, 134, 168, 0.12);
+        border-radius: 1.3rem;
+        padding: 1.1rem 1rem;
+    }
+
+    .booking-check-card h3,
+    .booking-otp-card h3 {
+        color: #163247;
+        font-size: 1.05rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .booking-meta-list {
+        display: grid;
+        gap: 0.7rem;
+        margin-top: 1rem;
+    }
+
+    .booking-meta-item {
+        align-items: center;
+        background: rgba(255, 255, 255, 0.75);
+        border: 1px solid rgba(76, 134, 168, 0.12);
+        border-radius: 1rem;
+        display: flex;
+        gap: 0.75rem;
+        padding: 0.9rem 1rem;
+    }
+
+    .booking-meta-item i {
+        color: #2d7396;
+    }
+
+    .booking-actions {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.9rem;
+    }
+
+    .booking-actions .btn {
+        border-radius: 999px;
+        padding: 0.8rem 1.35rem;
+    }
+
+    .booking-alert {
+        border-radius: 1rem;
+        display: none;
+        font-size: 0.95rem;
+        margin-top: 1rem;
+        padding: 0.95rem 1rem;
+    }
+
+    .booking-alert.active {
+        display: block;
+    }
+
+    .booking-alert.success {
+        background: #e7f6ee;
+        border: 1px solid #bfe4cc;
+        color: #20613b;
+    }
+
+    .booking-alert.error {
+        background: #fbe7e9;
+        border: 1px solid #f3c6cc;
+        color: #a12f3f;
+    }
+
+    .booking-summary-image {
+        aspect-ratio: 16 / 10;
+        border-radius: 1.4rem;
+        object-fit: cover;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .booking-summary-card {
+        background: rgba(255, 255, 255, 0.76);
+        border: 1px solid rgba(76, 134, 168, 0.14);
+        border-radius: 1.4rem;
+        display: grid;
+        gap: 0.85rem;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    .booking-summary-row {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .booking-summary-row span:first-child {
+        color: #5e7687;
+    }
+
+    .booking-summary-row strong {
+        color: #163247;
+    }
+
+    @media (max-width: 991.98px) {
+        .booking-shell {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .booking-card,
+        .booking-side {
+            padding: 1.35rem;
+        }
+
+        .booking-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .booking-actions {
+            align-items: stretch;
+            flex-direction: column;
+        }
+    }
+</style>
+
+<section class="booking-page">
+    <div class="container">
+        <div class="booking-shell">
+            <div class="booking-card">
+                <p class="booking-eyebrow">Booking Details</p>
+                <h1>Confirm your stay before payment.</h1>
+                <p class="booking-subtitle">Choose your move-in date, enter the number of rooms you want, verify the OTP sent to your email, and only then continue to Stripe checkout.</p>
+
+                <form id="booking-form" class="booking-form validation-required" novalidate>
+                    <div class="booking-grid">
+                        <div class="booking-field full">
+                            <label for="checkInDate">Move-in Date</label>
+                            <input id="checkInDate" name="checkInDate" type="date" class="form-control" required>
+                        </div>
+
+                        <div class="booking-field">
+                            <label for="roomsBooked">Rooms Required</label>
+                            <input id="roomsBooked" name="roomsBooked" type="number" min="1" max="<%= property.availableRooms || property.maxOcc || 1 %>" class="form-control" value="1" required>
+                        </div>
+
+                        <div class="booking-field">
+                            <label>Booking Amount</label>
+                            <input type="text" class="form-control" value="₹ <%= property.bookingMoney %>" readonly>
+                        </div>
+                    </div>
+
+                    <div class="booking-check-card">
+                        <h3>Availability Check</h3>
+                        <p class="booking-help">We’ll verify room availability from your selected move-in date based on current active and pending stays before payment starts.</p>
+                        <div class="booking-actions mt-3">
+                            <button type="button" class="btn btn-primary" id="send-otp-btn">Check Availability And Send OTP</button>
+                            <a href="/property/<%= property._id %>">Back to property</a>
+                        </div>
+                    </div>
+
+                    <div class="booking-otp-card">
+                        <h3>Email Verification</h3>
+                        <p class="booking-help">Once move-in availability is confirmed, enter the OTP sent to your registered email to proceed.</p>
+                        <div class="booking-grid mt-3">
+                            <div class="booking-field full">
+                                <label for="otp">Booking OTP</label>
+                                <input id="otp" name="otp" type="text" class="form-control" placeholder="Enter OTP from email" inputmode="numeric" disabled required>
+                            </div>
+                        </div>
+
+                        <div class="booking-actions mt-3">
+                            <button type="button" class="btn btn-success" id="pay-btn" disabled>Verify OTP And Continue To Payment</button>
+                        </div>
+                    </div>
+
+                    <div class="booking-check-card" style="background: #f0f8ff; border-color: rgba(45, 115, 150, 0.15);">
+                        <div class="form-check" style="margin: 0;">
+                            <input id="termsCheckbox" name="termsCheckbox" type="checkbox" class="form-check-input" required>
+                            <label for="termsCheckbox" class="form-check-label" style="margin-left: 0.5rem; color: #355166; font-weight: 500;">
+                                I agree to the <a href="/terms" target="_blank" rel="noopener" style="color: #2d7396; text-decoration: underline;">Terms and Conditions</a> and understand that booking amount will not be refunded once payment is confirmed.
+                            </label>
+                        </div>
+                        <p class="booking-help" style="margin-top: 0.6rem; margin-bottom: 0;">This booking is final and non-refundable once payment is processed.</p>
+                    </div>
+
+                    <div id="booking-alert" class="booking-alert"></div>
+                </form>
+            </div>
+
+            <div class="booking-side">
+                <div class="booking-side-inner">
+                    <p class="booking-eyebrow">StayVista</p>
+                    <img src="<%= heroImage %>" alt="<%= property.name %>" class="booking-summary-image">
+                    <h2><%= property.name %></h2>
+                    <p><%= property.address.addL1 %>, <%= property.address.city %>, <%= property.address.state %></p>
+
+                    <div class="booking-meta-list">
+                        <div class="booking-meta-item">
+                            <i class="fa-solid fa-building"></i>
+                            <span><%= propertyType %> stay with verified listing details</span>
+                        </div>
+                        <div class="booking-meta-item">
+                            <i class="fa-solid fa-bed"></i>
+                            <span><%= property.availableRooms || property.maxOcc || 0 %> room(s) currently configured as available</span>
+                        </div>
+                        <div class="booking-meta-item">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span>Booking moves to payment only after availability check and OTP verification.</span>
+                        </div>
+                    </div>
+
+                    <div class="booking-summary-card">
+                        <div class="booking-summary-row">
+                            <span>Monthly Rate</span>
+                            <strong>₹ <%= property.rate %></strong>
+                        </div>
+                        <div class="booking-summary-row">
+                            <span>Booking Amount</span>
+                            <strong>₹ <%= property.bookingMoney %></strong>
+                        </div>
+                        <div class="booking-summary-row">
+                            <span>Owner</span>
+                            <strong><%= property.owner.name %></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const bookingForm = document.getElementById('booking-form');
+    const sendOtpBtn = document.getElementById('send-otp-btn');
+    const payBtn = document.getElementById('pay-btn');
+    const otpInput = document.getElementById('otp');
+    const termsCheckbox = document.getElementById('termsCheckbox');
+    const alertBox = document.getElementById('booking-alert');
+    let otpKey = '';
+
+    function showAlert(type, message) {
+        alertBox.className = `booking-alert active ${type}`;
+        alertBox.innerText = message;
+    }
+
+    function setLoadingState(button, loadingText, isLoading) {
+        if (!button.dataset.originalText)
+            button.dataset.originalText = button.innerText;
+
+        button.disabled = isLoading;
+        button.innerText = isLoading ? loadingText : button.dataset.originalText;
+    }
+
+    function getFormPayload() {
+        return new URLSearchParams(new FormData(bookingForm));
+    }
+
+    sendOtpBtn.addEventListener('click', () => {
+        if (!bookingForm.checkValidity()) {
+            bookingForm.classList.add('was-validated');
+            return;
+        }
+
+        setLoadingState(sendOtpBtn, 'Checking availability...', true);
+
+        axios({
+            url: '/booking/<%= property._id %>/send-otp',
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            data: getFormPayload().toString()
+        })
+            .then((res) => {
+                otpKey = res.data.otpKey;
+                otpInput.disabled = false;
+                payBtn.disabled = false;
+                const roomsLeft = res.data.availability.availableRooms;
+                showAlert('success', `Availability confirmed. OTP sent to your email. ${roomsLeft} room(s) remain available from the selected move-in date.`);
+            })
+            .catch((err) => {
+                showAlert('error', err.response?.data?.error || 'Could not verify booking details.');
+            })
+            .finally(() => {
+                setLoadingState(sendOtpBtn, 'Checking availability...', false);
+            });
+    });
+
+    payBtn.addEventListener('click', () => {
+        if (!termsCheckbox.checked) {
+            showAlert('error', 'Please accept the terms and conditions to proceed with booking.');
+            return;
+        }
+
+        if (!otpKey) {
+            showAlert('error', 'Please request OTP after checking availability first.');
+            return;
+        }
+
+        if (!otpInput.value.trim()) {
+            showAlert('error', 'Please enter the OTP sent to your email.');
+            return;
+        }
+
+        setLoadingState(payBtn, 'Verifying OTP...', true);
+
+        const payload = getFormPayload();
+        payload.append('otpKey', otpKey);
+        payload.set('otp', otpInput.value.trim());
+
+        axios({
+            url: '/booking/<%= property._id %>/verify-and-pay',
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            data: payload.toString()
+        })
+            .then((res) => {
+                const bookingData = res.data.bookingData;
+
+                return axios({
+                    url: '/property/<%= property._id %>/makePayment',
+                    method: 'get',
+                    params: {
+                        checkInDate: bookingData.checkInDate,
+                        roomsBooked: bookingData.roomsBooked,
+                        verificationKey: bookingData.verificationKey
+                    }
+                });
+            })
+            .then((res) => {
+                window.location = res.data.url;
+            })
+            .catch((err) => {
+                showAlert('error', err.response?.data?.error || 'Could not continue to payment.');
+            })
+            .finally(() => {
+                setLoadingState(payBtn, 'Verifying OTP...', false);
+            });
+    });
+</script>

@@ -246,7 +246,7 @@
         <div class="auth-shell">
             <div class="auth-showcase">
                 <div class="auth-showcase-content">
-                    <p class="auth-eyebrow">PG Finder</p>
+                    <p class="auth-eyebrow">StayVista</p>
                     <h1>Sign in and continue your stay search.</h1>
                     <p>Access your dashboard, track bookings, and revisit shortlisted properties through one cleaner login flow.</p>
                     <div class="auth-points">
@@ -272,6 +272,8 @@
 
                 <% if (attempt && attempt === 'failed') { %>
                     <div class="auth-alert">Invalid email ID or password.</div>
+                <% } else if (attempt && attempt === 'captcha-failed') { %>
+                    <div class="auth-alert">Captcha verification failed. Try again.</div>
                 <% } %>
 
                 <form method="post" id="form" class="auth-form validation-required" novalidate>
@@ -298,6 +300,19 @@
                             </div>
                         </div>
                         <p class="auth-help">Minimum 8 characters with one uppercase letter, one number, and one special character.</p>
+                    </div>
+
+                    <div class="auth-field">
+                        <label for="captchaAnswer">Captcha</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <%= captchaQuestion %>
+                                </div>
+                            </div>
+                            <input id="captchaAnswer" name="captchaAnswer" placeholder="Answer to continue" type="text" class="form-control" autocomplete="off" autocapitalize="characters" spellcheck="false" required="required">
+                        </div>
+                        <p class="auth-help">Challenges now vary between multi-step math, sequence, reverse-text, and character-position prompts.</p>
                     </div>
 
                     <div class="auth-actions">

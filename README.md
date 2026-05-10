@@ -1,16 +1,16 @@
-# PG Finder v2
+# StayVista
 
-PG Finder is a web application that helps users find PGs and hostels in different states and cities. It provides a 
+StayVista is a web application that helps users find PGs and hostels in different states and cities. It provides a 
 user-friendly interface to search and book accommodations based on location, price, and amenities. Built using Node.js, 
-Express JS and MongoDB, PG Finder is easy to deploy and customize.
+Express JS and MongoDB, StayVista is easy to deploy and customize.
 
 Live at : [pg-finder-dart.onrender.com](https://pg-finder-dart.onrender.com/)
 
-![Logo Finder Logo](https://github.com/aryan-upa/pg-finder-v2/blob/85b77a2356efa82f4f49fdf6c34e354a85f50b1c/public/images/logo-large.png)
+![StayVista Logo](https://github.com/aryan-upa/pg-finder-v2/blob/85b77a2356efa82f4f49fdf6c34e354a85f50b1c/public/images/stayvista-logo.png)
 
 ## Usage:
 
-The PG Finder application has been divided into 3 working modules, namely: Rider, Provider & Admin.
+The StayVista application has been divided into 3 working modules, namely: Rider, Provider & Admin.
 
 ### Rider
 The rider module encompasses the user who is here to look for properties. A rider in the application can do several 
@@ -36,7 +36,7 @@ dashboard.
 
 ### Admin
 As the name suggests, the admin has the complete control over the application. There are various tasks an admin can 
-perform but PG Finder has taken care of the fact that multiple people can be admin, for this there is an entire 
+perform but StayVista has taken care of the fact that multiple people can be admin, for this there is an entire 
 admin-creation mechanism in place. Admin rights are as below:
 
 1. Create admin account by providing Email and Admin Key.
@@ -75,5 +75,3 @@ MIT License - Copyright (c) 2023 Aryan Upadhyay & Priyanshi Mittal
 
 Frontend Development: [@priyanshi-mittal](https://github.com/priyanshi-mittal) <br>
 Backend Development: [@aryan-upa](https://github.com/aryan-upa)
-
-

@@ -31,6 +31,9 @@ const loginSchema = joi.object({
 	}),
 	pass: joi.string().required().messages({
 		'string.empty': 'Password is required!',
+	}),
+	captchaAnswer: joi.string().trim().required().messages({
+		'string.empty': 'Captcha answer is required!',
 	})
 }).options({abortEarly: false});
 
@@ -73,6 +76,10 @@ const providerSchema = joi.object({
 	gst: joi.string().trim().pattern(new RegExp('^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$')).required().messages({
 		'string.empty': 'GST Number is required',
 		'string.pattern.base': 'Improper GST Format'
+	}),
+	licenseValidUpto: joi.date().required().messages({
+		'date.base': 'Please provide a valid license expiry date.',
+		'date.empty': 'License valid upto date is required.'
 	}),
 	addBuilding: joi.string().trim().required().min(5).max(50).messages({
 		'string.empty': 'Building Name can not be empty.',
@@ -120,6 +127,10 @@ const propertySchema = joi.object({
 	addL1: joi.string().trim().required().min(10).max(80).messages({
 		'string.empty': 'Address Line 1 is required.',
 	}),
+	exactLocationLink: joi.string().trim().uri({scheme: [/https?/] }).required().messages({
+		'string.uri': 'Please enter a valid Google Maps link.',
+		'string.empty': 'Exact location link is required.'
+	}),
 	landmark: joi.string().trim().required().min(10).max(80).messages({
 		'string.empty': 'Landmark is required',
 	}),
@@ -143,6 +154,11 @@ const propertySchema = joi.object({
 		'number.min': 'Minimum occupancy is 1',
 		'number max': 'Maximum occupancy is 1000',
 		'number.empty': 'Please provide occupancy'
+	}),
+	availableRooms: joi.number().min(1).max(1000).required().messages({
+		'number.min': 'Available rooms must be at least 1',
+		'number max': 'Available rooms can not exceed 1000',
+		'number.empty': 'Please provide available rooms'
 	}),
 	type: joi.string().required().valid('male', 'female','co').messages({
 		'string.empty': 'Please defined type.',
@@ -197,6 +213,14 @@ const contactSchema = joi.object({
 	content: joi.string().min(10).max(1000).required()
 });
 
+const conversationMessageSchema = joi.object({
+	content: joi.string().trim().min(2).max(1500).required().messages({
+		'string.empty': 'Message can not be empty!',
+		'string.min': 'Message should contain at least 2 characters.',
+		'string.max': 'Message can not exceed 1500 characters.',
+	})
+}).options({abortEarly: false});
+
 module.exports = {
 	registrationSchema,
 	loginSchema,
@@ -204,4 +228,5 @@ module.exports = {
 	providerSchema,
 	propertySchema,
 	contactSchema,
+	conversationMessageSchema,
 }

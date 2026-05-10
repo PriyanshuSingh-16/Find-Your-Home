@@ -330,6 +330,7 @@
                         <p><%= userInfo.occupation || 'Occupation not added yet' %></p>
                         <% if (userInfo.id === userRoleID) { %>
                             <a role="button" class="btn btn-primary" href="/rider/<%= userRoleID %>/edit">Edit Profile</a>
+                            <a role="button" class="btn btn-outline-success" href="/messages">Open Inbox</a>
                         <% } %>
                     </div>
 
@@ -398,33 +399,58 @@
                                     <div class="dashboard-item">
                                         <div class="dashboard-item-top">
                                             <span class="dashboard-item-badge">Booking ID: <%= book.id %></span>
-                                            <span class="dashboard-status <%= book.res === undefined ? 'status-pending' : book.res === false ? 'status-declined' : 'status-accepted' %>">
-                                                <% if (book.res === undefined) { %>
-                                                    Pending
-                                                <% } else if (book.res === false) { %>
-                                                    Declined
+                                            <span class="dashboard-status <%= book.cancelledAt ? 'status-declined' : book.checkedOutAt ? 'status-pending' : 'status-accepted' %>">
+                                                <% if (book.cancelledAt) { %>
+                                                    Cancelled
+                                                <% } else if (book.checkedOutAt) { %>
+                                                    Checked Out
                                                 <% } else { %>
-                                                    Accepted
+                                                    Confirmed
                                                 <% } %>
                                             </span>
                                         </div>
                                         <div class="dashboard-item-body">
-                                            <img src="<%= (book.property.images && book.property.images[0]) || '/images/party.png' %>" alt="<%= book.property.name %>" class="dashboard-item-image">
+                                            <img src="<%= (book.property.images && book.property.images[0]) || '/images/stayvista-logo.png' %>" alt="<%= book.property.name %>" class="dashboard-item-image">
                                             <div class="dashboard-item-content">
                                                 <h3><%= book.property.name %></h3>
                                                 <p><%= book.property.address.addL1 %>, <%= book.property.address.addL2 %>, <%= book.property.address.city %>, <%= book.property.address.state %></p>
                                                 <div class="dashboard-inline-meta">
                                                     <span>Status date: <%= book.date.toLocaleDateString('en') %></span>
-                                                    <span>Booking amount: <%= book.property.bookingMoney %> Rs.</span>
-                                                    <% if (book.res === false) { %>
-                                                        <span>Refund to be initiated</span>
+                                                    <% if (book.paymentID) { %>
+                                                        <span>Payment Ref: <%= book.paymentID %></span>
                                                     <% } %>
+                                                    <% if (book.checkInDate) { %>
+                                                        <span>Move-in: <%= book.checkInDate.toLocaleDateString('en-IN') %></span>
+                                                    <% } %>
+                                                    <% if (book.roomsBooked) { %>
+                                                        <span>Rooms: <%= book.roomsBooked %></span>
+                                                    <% } %>
+                                                    <% if (book.checkedOutAt) { %>
+                                                        <span>Checked out: <%= book.checkedOutAt.toLocaleDateString('en-IN') %></span>
+                                                    <% } %>
+                                                    <% if (book.cancelledAt) { %>
+                                                        <span>Cancelled on: <%= book.cancelledAt.toLocaleDateString('en-IN') %></span>
+                                                    <% } %>
+                                                    <span>Booking amount: <%= book.property.bookingMoney %> Rs.</span>
                                                 </div>
                                                 <div class="dashboard-comment">
-                                                    <strong>Comment:</strong> <%= book.comment ? book.comment : 'No comment yet.' %>
+                                                    <% if (book.cancelledAt) { %>
+                                                        <strong>Cancellation Reason:</strong> <%= book.cancellationReason || 'No reason shared.' %>
+                                                    <% } else { %>
+                                                        <strong>Booking Details:</strong> Payment completed successfully. For any move-in coordination, use the provider contact or inbox.
+                                                    <% } %>
                                                 </div>
                                                 <div class="dashboard-item-actions">
                                                     <a href="/property/<%= book.property.id %>" target="_blank" class="btn btn-primary">See Property</a>
+                                                    <% if (!book.cancelledAt && !book.checkedOutAt) { %>
+                                                        <a href="/messages/property/<%= book.property.id %>" class="btn btn-outline-success">Contact Owner</a>
+                                                    <% } %>
+                                                    <% if (book.res === true && !book.cancelledAt && !book.checkedOutAt && book.checkInDate && book.checkInDate >= new Date(new Date().setHours(0, 0, 0, 0))) { %>
+                                                        <a href="/booking/<%= book.id %>/cancel" class="btn btn-outline-danger">Cancel Booking</a>
+                                                    <% } %>
+                                                    <% if (book.res === true && !book.cancelledAt && !book.checkedOutAt && book.checkInDate && book.checkInDate <= new Date()) { %>
+                                                        <button type="button" class="btn btn-outline-success" onclick="checkoutBooking('<%= book.id %>')">Check Out</button>
+                                                    <% } %>
                                                 </div>
                                             </div>
                                         </div>
@@ -445,7 +471,7 @@
                                             <span class="dashboard-item-badge">Property ID: <%= prop.id %></span>
                                         </div>
                                         <div class="dashboard-item-body">
-                                            <img src="<%= (prop.images && prop.images[0]) || '/images/party.png' %>" alt="<%= prop.name %>" class="dashboard-item-image">
+                                            <img src="<%= (prop.images && prop.images[0]) || '/images/stayvista-logo.png' %>" alt="<%= prop.name %>" class="dashboard-item-image">
                                             <div class="dashboard-item-content">
                                                 <h3><%= prop.name %></h3>
                                                 <p><%= prop.address.addL1 %>, <%= prop.address.addL2 %>, <%= prop.address.city %>, <%= prop.address.state %></p>
@@ -469,3 +495,21 @@
         </div>
     </div>
 </section>
+
+<script>
+    function checkoutBooking(bookingId) {
+        axios({
+            url: `/booking/${bookingId}/checkout`,
+            method: 'post'
+        })
+            .then((res) => {
+                addFlash('success', res.data.success || 'Checked out successfully!');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            })
+            .catch((err) => {
+                addFlash('error', err.response?.data?.error || 'Could not complete checkout.');
+            });
+    }
+</script>

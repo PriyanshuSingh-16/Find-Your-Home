@@ -7,6 +7,9 @@ const schema = new mongoose.Schema({
 	email: String,
 	dob: Date,
 	gst: String,
+	profilePic: String,
+	licenseValidity: String,
+	licenseValidUpto: Date,
 	properties: [{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Property'

@@ -27,6 +27,7 @@ const schema = new mongoose.Schema({
 		country: String
 	},
 	maxOcc: Number,
+	availableRooms: Number,
 	type: String,
 	desc: String,
 	food: [detSchema],
@@ -47,8 +48,10 @@ const schema = new mongoose.Schema({
 		ref: 'Provider'
 	},
 	images: [String],
+	videos: [String],
 	since: Number,
-	bookingMoney: Number
+	bookingMoney: Number,
+	exactLocationLink: String
 });
 
 schema.index({

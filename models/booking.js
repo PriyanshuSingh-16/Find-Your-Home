@@ -16,10 +16,25 @@ const schema = new mongoose.Schema({
 		ref: 'Provider'
 	},
 	date: Date,
+	checkInDate: Date,
+	checkOutDate: Date,
+	roomsBooked: Number,
+	paymentID: String,
 	isTransferred: Boolean,
 	completed: Boolean,
 	res: Boolean,
-	comment: String
+	comment: String,
+	status: {
+		type: String,
+		default: 'pending'
+	},
+	inventoryHeld: {
+		type: Boolean,
+		default: true
+	},
+	cancelledAt: Date,
+	cancellationReason: String,
+	checkedOutAt: Date
 });
 
 schema.post('findOneAndDelete', async (data) => {

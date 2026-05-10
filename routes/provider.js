@@ -3,6 +3,7 @@ const router = express.Router();
 const providers = require('../models/provider');
 const {isRoleAdmin, isLoggedIn, isCurrentUserOrAdmin, isCurrentUser, isRoleProvider} = require("../middlewares/role_validator");
 const {validateProviderDetails} = require('../middlewares/schema_validator');
+const {uploadProviderFiles} = require("../middlewares/file_uploader");
 const logins = require('../models/login');
 const properties = require('../models/property');
 const bookings = require('../models/booking');
@@ -90,10 +91,11 @@ router.get('/:id/edit', isCurrentUser, async (req, res) => {
 	}
 });
 
-router.patch('/:id', isCurrentUser, validateProviderDetails, async (req, res) => {
+router.patch('/:id', isCurrentUser, uploadProviderFiles.fields([{name: 'profile-pic'}, {name: 'license-validity'}]), validateProviderDetails, async (req, res) => {
 	try {
 		const {id} = req.params;
-		const {email, phone, dob, gst, addBuilding, addL1, addL2, landmark, state, city, zipCode} = req.body;
+		const {email, phone, dob, gst, licenseValidUpto, addBuilding, addL1, addL2, landmark, state, city, zipCode} = req.body;
+		const provider = await providers.findById({_id: id});
 
 		const address = {
 			building: addBuilding,
@@ -106,14 +108,23 @@ router.patch('/:id', isCurrentUser, validateProviderDetails, async (req, res) =>
 			country: 'India'
 		}
 
-		await providers.findOneAndUpdate({_id: id}, {
+		const uploadedFiles = req.files || {};
+		const profilePic = uploadedFiles['profile-pic'] ? uploadedFiles['profile-pic'][0].path : provider.profilePic;
+		const licenseValidity = uploadedFiles['license-validity'] ? uploadedFiles['license-validity'][0].path : provider.licenseValidity;
+
+		const updatedProvider = await providers.findOneAndUpdate({_id: id}, {
 			phone: phone,
 			dob: dob,
 			gst: gst,
+			profilePic: profilePic,
+			licenseValidity: licenseValidity,
+			licenseValidUpto: licenseValidUpto,
 			address: address
-		});
+		}, {new: true});
 
 		await logins.findOneAndUpdate({username: email}, {isFilled: true});
+		req.session.userDet = updatedProvider;
+		req.session.userRoleID = updatedProvider.id;
 		res.send({success: 'Profile Updated!'}); // working properly
 	} catch (e) {
 		console.log(e);

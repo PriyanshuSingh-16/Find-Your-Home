@@ -1,5 +1,5 @@
 {
-  "name": "pg-finder-v2",
+  "name": "stayvista",
   "version": "1.0.0",
   "description": "A PG Finding application built using Node & Express JS.",
   "main": "app.js",

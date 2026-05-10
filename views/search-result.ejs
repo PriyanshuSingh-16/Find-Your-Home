@@ -7,39 +7,118 @@
         padding: 1rem 0 4rem;
     }
 
-    .search-panel {
-        background: rgba(255, 255, 255, 0.9);
+    .search-results-shell {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .search-card {
+        background: rgba(255, 255, 255, 0.92);
         border: 1px solid rgba(13, 110, 253, 0.08);
         border-radius: 1.8rem;
         box-shadow: 0 1.3rem 2.8rem rgba(31, 56, 88, 0.08);
-        padding: 2rem;
+        overflow: hidden;
     }
 
-    .search-meta {
+    .search-hero {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(228, 241, 247, 0.96) 100%);
+        padding: 2.2rem;
+        position: relative;
+    }
+
+    .search-hero::before {
+        background: radial-gradient(circle, rgba(186, 220, 235, 0.42) 0%, rgba(186, 220, 235, 0) 72%);
+        content: '';
+        height: 18rem;
+        position: absolute;
+        right: -5rem;
+        top: -5rem;
+        width: 18rem;
+    }
+
+    .search-hero-grid {
+        align-items: end;
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: minmax(0, 1.8fr) minmax(240px, 0.85fr);
+        position: relative;
+        z-index: 1;
+    }
+
+    .search-hero-copy p:first-child,
+    .search-section-intro p:first-child {
+        color: #4c86a8;
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        margin-bottom: 0.8rem;
+        text-transform: uppercase;
+    }
+
+    .search-hero-copy h1,
+    .search-section-intro h2,
+    .empty-search-copy h2 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-size: clamp(2rem, 3.6vw, 3rem);
+        font-style: italic;
+        margin-bottom: 0.7rem;
+    }
+
+    .search-hero-copy p:last-child,
+    .search-section-intro p:last-child {
         color: #5e7687;
-        margin-bottom: 1.2rem;
+        line-height: 1.8;
+        margin: 0;
+        max-width: 44rem;
+    }
+
+    .search-summary {
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(76, 134, 168, 0.16);
+        border-radius: 1.5rem;
+        display: grid;
+        gap: 0.9rem;
+        padding: 1.35rem;
+    }
+
+    .search-summary-stat {
+        align-items: center;
+        display: flex;
+        gap: 0.8rem;
+    }
+
+    .search-summary-badge {
+        align-items: center;
+        background: rgba(45, 115, 150, 0.12);
+        border-radius: 999px;
+        color: #2d7396;
+        display: inline-flex;
+        font-size: 0.9rem;
+        font-weight: 600;
+        justify-content: center;
+        min-height: 2.4rem;
+        min-width: 2.4rem;
+    }
+
+    .search-summary-stat strong {
+        color: #163247;
+        display: block;
+        font-size: 1.05rem;
+    }
+
+    .search-summary-stat span {
+        color: #60798b;
+        font-size: 0.92rem;
+    }
+
+    .search-filter-panel {
+        padding: 2rem;
     }
 
     .search-toolbar {
         display: grid;
         gap: 1.25rem;
-    }
-
-    .search-toolbar-head {
-        text-align: center;
-    }
-
-    .search-toolbar-head h1 {
-        color: #163247;
-        font-family: 'Poppins', sans-serif;
-        font-size: clamp(1.8rem, 3vw, 2.4rem);
-        font-style: italic;
-        margin-bottom: 0.45rem;
-    }
-
-    .search-toolbar-head p {
-        color: #5e7687;
-        margin: 0;
     }
 
     .search-primary-row,
@@ -101,8 +180,8 @@
         display: flex;
         flex-direction: column;
         gap: 0.6rem;
-        min-height: 3.35rem;
         justify-content: center;
+        min-height: 3.35rem;
         padding: 0.75rem 1rem;
     }
 
@@ -127,13 +206,171 @@
     .search-submit-wrap {
         display: flex;
         justify-content: center;
-        padding-top: 0.4rem;
+        padding-top: 0.35rem;
     }
 
     .search-submit-btn {
         border-radius: 999px;
         min-width: 180px;
         padding: 0.8rem 1.5rem;
+    }
+
+    .search-results-panel {
+        padding: 2rem;
+    }
+
+    .search-results-top {
+        align-items: end;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: space-between;
+        margin-bottom: 1.6rem;
+    }
+
+    .search-query-badge {
+        background: rgba(45, 115, 150, 0.12);
+        border-radius: 999px;
+        color: #2d7396;
+        display: inline-flex;
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 0.55rem 0.95rem;
+    }
+
+    .search-query-badge strong {
+        color: #163247;
+        margin-left: 0.35rem;
+    }
+
+    .search-meta-text {
+        color: #60798b;
+        margin: 0;
+    }
+
+    .results-grid {
+        display: grid;
+        gap: 1.4rem;
+        grid-template-columns: 1fr;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .result-card {
+        background: rgba(255, 255, 255, 0.98);
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        border-radius: 1.6rem;
+        box-shadow: 0 1rem 2.2rem rgba(31, 56, 88, 0.08);
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        overflow: hidden;
+        transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .result-card:hover {
+        border-color: rgba(45, 115, 150, 0.22);
+        box-shadow: 0 1.5rem 2.7rem rgba(31, 56, 88, 0.12);
+        transform: translateY(-4px);
+    }
+
+    .result-card-image {
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+    }
+
+    .result-card-body {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 0.8rem;
+        padding: 1.2rem;
+        overflow: hidden;
+    }
+
+    .result-card-top {
+        align-items: flex-start;
+        display: flex;
+        gap: 0.8rem;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .result-card-top h3 {
+        color: #163247;
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin: 0 0 0.25rem;
+        line-height: 1.4;
+    }
+
+    .result-card-address {
+        color: #647d8e;
+        font-size: 0.94rem;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .result-pill {
+        background: #eef5f8;
+        border-radius: 999px;
+        color: #3d6278;
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 0.45rem 0.75rem;
+        white-space: nowrap;
+    }
+
+    .result-highlights {
+        display: grid;
+        gap: 0.6rem;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        overflow-x: auto;
+        padding-bottom: 0.25rem;
+    }
+
+    .result-highlight {
+        background: #f8fbfd;
+        border: 1px solid rgba(76, 134, 168, 0.12);
+        border-radius: 0.9rem;
+        padding: 0.65rem 0.75rem;
+        flex-shrink: 0;
+    }
+
+    .result-highlight span {
+        color: #6b8393;
+        display: block;
+        font-size: 0.8rem;
+        margin-bottom: 0.2rem;
+        font-weight: 500;
+    }
+
+    .result-highlight strong {
+        color: #17344b;
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+
+    .result-card-footer {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        justify-content: flex-start;
+        margin-top: 0.4rem;
+    }
+
+    .result-card-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+    }
+
+    .result-card-links .btn {
+        border-radius: 999px;
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
     }
 
     .empty-search-state {
@@ -144,21 +381,13 @@
         box-shadow: 0 1.2rem 2.6rem rgba(31, 56, 88, 0.08);
         display: flex;
         gap: 2rem;
-        margin: 2rem 0 1rem;
+        margin: 1rem 0 0;
         padding: 2rem;
     }
 
     .empty-search-state img {
         max-width: min(100%, 320px);
         width: 100%;
-    }
-
-    .empty-search-copy h2 {
-        color: #163247;
-        font-family: 'Poppins', sans-serif;
-        font-size: clamp(2rem, 4vw, 2.6rem);
-        font-style: italic;
-        margin-bottom: 0.85rem;
     }
 
     .empty-search-copy p {
@@ -180,47 +409,54 @@
         gap: 0.8rem;
     }
 
-    .prop-card {
-        border: 1px solid black;
-        border-left: none;
-        border-right: none;
-        margin-bottom: 2rem;
-        transition: 100ms linear;
+    .search-pagination {
+        margin-top: 1.75rem;
     }
 
-    .prop-card:hover {
-        box-sizing: border-box;
-        border: 3px solid lightblue;
+    .search-pagination .pagination {
+        margin-bottom: 0;
     }
 
-    .prop-card:hover .id-hover {
-        color: white;
-        background-color: var(--bs-primary);
+    .search-pagination .page-link {
+        border: 1px solid rgba(76, 134, 168, 0.16);
+        border-radius: 999px;
+        color: #2d7396;
+        margin-left: 0.5rem;
+        padding: 0.7rem 1rem;
     }
 
-    .prop-card:hover .count-hover {
-        color: white;
-        background-color: var(--bs-danger);
+    .search-pagination .page-link.disabled {
+        background: #f1f6f9;
+        color: #94a7b4;
+        pointer-events: none;
     }
 
-    .id-hover {
-        transition: 100ms linear;
-        background-color: var(--bs-primary-bg-subtle);
-    }
-
-    .count-hover {
-        transition: 100ms linear;
-        background-color: var(--bs-danger-bg-subtle)
-    }
-
-    @media (max-width: 767.98px) {
-        .search-panel {
-            padding: 1.25rem;
-        }
-
+    @media (max-width: 991.98px) {
+        .search-hero-grid,
         .search-primary-row,
         .search-filter-row {
             grid-template-columns: 1fr;
+        }
+
+        .search-filter-panel,
+        .search-results-panel {
+            padding: 1.4rem;
+        }
+
+        .result-card {
+            grid-template-columns: 240px 1fr;
+        }
+
+        .result-highlights {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .search-hero,
+        .search-filter-panel,
+        .search-results-panel {
+            padding: 1.3rem;
         }
 
         .empty-search-state {
@@ -232,221 +468,359 @@
         .empty-search-copy ul {
             text-align: left;
         }
-    }
 
+        .result-card {
+            grid-template-columns: 1fr;
+        }
+
+        .result-card-image {
+            aspect-ratio: 16 / 9;
+        }
+
+        .result-card-top {
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .result-highlights {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.5rem;
+        }
+
+        .result-highlight {
+            padding: 0.55rem 0.65rem;
+        }
+
+        .result-highlight span {
+            font-size: 0.75rem;
+            margin-bottom: 0.15rem;
+        }
+
+        .result-highlight strong {
+            font-size: 0.9rem;
+        }
+
+        .result-card-links .btn {
+            font-size: 0.85rem;
+            padding: 0.45rem 0.85rem;
+        }
+    }
 </style>
 
 <section class="search-results-page">
     <div class="container">
-    <div class="search-panel">
-    <form action="/property/" id="search-form" method="get" class="mb-3">
-        <div class="search-toolbar">
-            <div class="search-toolbar-head">
-                <h1>Refine your PG search</h1>
-                <p>Adjust the search input, filters, and sorting to narrow results faster.</p>
-            </div>
-
-            <div class="search-primary-row">
-                <div class="search-field">
-                    <label for="search-type">Search Type</label>
-                    <select name="searchType" id="search-type" class="form-select" onchange="modifyInput()">
-                        <option value="text" <%= query.searchType === 'text' && 'selected'%>>Text</option>
-                        <option value="zip" <%= query.searchType === 'zip' && 'selected'%>>ZIP Code</option>
-                    </select>
-                </div>
-                <div class="search-field">
-                    <label for="search-text">Location or ZIP</label>
-                    <input type="text" name="searchText" id="search-text" class="form-control" value="<%= query.searchText %>" required>
-                </div>
-            </div>
-
-            <div class="search-filter-row">
-                <div class="search-field">
-                    <label for="gender">Property Type</label>
-                    <select name="gender" id="gender" class="form-select">
-                        <option value="">All Types</option>
-                        <option value="co" <%= query.gender && query.gender === 'co' && 'selected'%>>Co-Living</option>
-                        <option value="male" <%= query.gender && query.gender === 'male' && 'selected'%>>Male</option>
-                        <option value="female" <%= query.gender && query.gender === 'female' && 'selected' %>>Female</option>
-                    </select>
-                </div>
-
-                <div class="search-field">
-                    <label for="rating">Minimum Rating</label>
-                    <select name="rating" id="rating" class="form-select">
-                        <option value="">Any Rating</option>
-                        <option value="1" <%= query.rating && query.rating === '1' && 'selected'%>>1 star+</option>
-                        <option value="2" <%= query.rating && query.rating === '2' && 'selected'%>>2 star+</option>
-                        <option value="3" <%= query.rating && query.rating === '3' && 'selected'%>>3 star+</option>
-                        <option value="4" <%= query.rating && query.rating === '4' && 'selected'%>>4 star+</option>
-                        <option value="5" <%= query.rating && query.rating === '5' && 'selected'%>>5 star</option>
-                    </select>
-                </div>
-
-                <div class="search-field">
-                    <label for="rate">Maximum Rate</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fa-solid fa-rupee"></i></span>
-                        <input type="number" name="rate" id="rate" class="form-control" min="100" max="50000" step="100" value="<%= query.rate %>" placeholder="Enter max price">
+        <div class="search-results-shell">
+            <div class="search-card search-hero">
+                <div class="search-hero-grid">
+                    <div class="search-hero-copy">
+                        <p>Search Results</p>
+                        <h1>Find the right PG with cleaner comparisons.</h1>
+                        <p>Browse structured listings, compare rate, rating, booking amount, and property type quickly, and jump straight into the stay that fits your search.</p>
                     </div>
-                </div>
 
-                <div class="search-sort">
-                    <label>Sort by Price</label>
-                    <div class="search-sort-options">
-                        <div class="form-check">
-                            <input type="radio" name="sort" value="asc" id="sortAsc" class="form-check-input" <%= query.sort === 'asc' && 'checked' %>>
-                            <label for="sortAsc" class="form-check-label">Low to High</label>
+                    <div class="search-summary">
+                        <div class="search-summary-stat">
+                            <span class="search-summary-badge"><i class="fa-solid fa-house"></i></span>
+                            <div>
+                                <strong><%= results.length %> Listings</strong>
+                                <span>Currently visible for this search</span>
+                            </div>
                         </div>
-
-                        <div class="form-check">
-                            <input type="radio" name="sort" value="desc" id="sortDsc" class="form-check-input" <%= query.sort === 'desc' && 'checked' %>>
-                            <label for="sortDsc" class="form-check-label">High to Low</label>
+                        <div class="search-summary-stat">
+                            <span class="search-summary-badge"><i class="fa-solid fa-location-dot"></i></span>
+                            <div>
+                                <strong><%= query.searchText || 'Location' %></strong>
+                                <span>Search target</span>
+                            </div>
+                        </div>
+                        <div class="search-summary-stat">
+                            <span class="search-summary-badge"><i class="fa-solid fa-sliders"></i></span>
+                            <div>
+                                <strong><%= query.gender ? 'Filtered' : 'Open Search' %></strong>
+                                <span><%= query.gender ? `Type: ${query.gender}` : 'All property types included' %></span>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="search-submit-wrap">
-                    <button type="submit" class="btn btn-primary search-submit-btn">Find Homes</button>
-                </div>
             </div>
-        </div>
-    </form>
 
-    <hr style="all: revert; height: 1px; background-color: rgba(22, 50, 71, 0.15);">
+            <div class="search-card search-filter-panel">
+                <form
+                    action="/property/"
+                    id="search-form"
+                    method="get"
+                    data-current-skip="<%= Number(query.skip || 0) %>"
+                    data-res-count="<%= Number(query.resCount || 10) %>"
+                    data-base-search-type="<%= query.searchType || '' %>"
+                    data-base-search-text="<%= query.searchText || '' %>"
+                >
+                    <div class="search-toolbar">
+                        <div class="search-primary-row">
+                            <div class="search-field">
+                                <label for="search-type">Search Type</label>
+                                <select name="searchType" id="search-type" class="form-select" onchange="modifyInput()">
+                                    <option value="text" <%= query.searchType === 'text' ? 'selected' : '' %>>Text</option>
+                                    <option value="zip" <%= query.searchType === 'zip' ? 'selected' : '' %>>ZIP Code</option>
+                                </select>
+                            </div>
 
-    <div class="col-10 mx-auto search-meta">
-        <div class="breadcrumb mb-0">
-            <span class="breadcrumb-item">Showing <span class="text-primary"><%= results.length %></span> result(s)</span>
-        </div>
+                            <div class="search-field">
+                                <label for="search-text">Location or ZIP</label>
+                                <input type="text" name="searchText" id="search-text" class="form-control" value="<%= query.searchText %>" required>
+                            </div>
+                        </div>
 
-        <% if (results.length === 0) { %>
-            <div class="empty-search-state">
-                <img src="/images/no-result-found.png" alt="No results found">
-                <div class="empty-search-copy">
-                    <h2>No matching PGs found yet.</h2>
-                    <p>
-                        There are no properties matching your current search filters for
-                        <strong><%= query.searchText %></strong>.
-                        That usually means the city has no listings yet, or the filters are too narrow.
-                    </p>
-                    <ul>
-                        <li>Try searching with just the city name first.</li>
-                        <li>Remove gender, rating, or price filters and search again.</li>
-                        <li>Use the homes page to browse top cities manually.</li>
+                        <div class="search-filter-row">
+                            <div class="search-field">
+                                <label for="gender">Property Type</label>
+                                <select name="gender" id="gender" class="form-select">
+                                    <option value="">All Types</option>
+                                    <option value="co" <%= query.gender === 'co' ? 'selected' : '' %>>Co-Living</option>
+                                    <option value="male" <%= query.gender === 'male' ? 'selected' : '' %>>Male</option>
+                                    <option value="female" <%= query.gender === 'female' ? 'selected' : '' %>>Female</option>
+                                </select>
+                            </div>
+
+                            <div class="search-field">
+                                <label for="rating">Minimum Rating</label>
+                                <select name="rating" id="rating" class="form-select">
+                                    <option value="">Any Rating</option>
+                                    <option value="1" <%= query.rating === '1' ? 'selected' : '' %>>1 star+</option>
+                                    <option value="2" <%= query.rating === '2' ? 'selected' : '' %>>2 star+</option>
+                                    <option value="3" <%= query.rating === '3' ? 'selected' : '' %>>3 star+</option>
+                                    <option value="4" <%= query.rating === '4' ? 'selected' : '' %>>4 star+</option>
+                                    <option value="5" <%= query.rating === '5' ? 'selected' : '' %>>5 star</option>
+                                </select>
+                            </div>
+
+                            <div class="search-field">
+                                <label for="rate">Maximum Rate</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-solid fa-rupee"></i></span>
+                                    <input type="number" name="rate" id="rate" class="form-control" min="100" max="50000" step="100" value="<%= query.rate %>" placeholder="Enter max price">
+                                </div>
+                            </div>
+
+                            <div class="search-sort">
+                                <label>Sort by Price</label>
+                                <div class="search-sort-options">
+                                    <div class="form-check">
+                                        <input type="radio" name="sort" value="asc" id="sortAsc" class="form-check-input" <%= query.sort === 'asc' ? 'checked' : '' %>>
+                                        <label for="sortAsc" class="form-check-label">Low to High</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input type="radio" name="sort" value="desc" id="sortDsc" class="form-check-input" <%= query.sort === 'desc' ? 'checked' : '' %>>
+                                        <label for="sortDsc" class="form-check-label">High to Low</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="search-submit-wrap">
+                                <button type="submit" class="btn btn-primary search-submit-btn">Find Homes</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="search-card search-results-panel">
+                <div class="search-results-top">
+                    <div class="search-section-intro">
+                        <p>Available PGs</p>
+                        <h2>Structured listings for faster browsing.</h2>
+                        <p class="search-meta-text">Compare the most important details at a glance and open any property in a separate page for full information.</p>
+                    </div>
+
+                    <div class="search-query-badge">
+                        Search:
+                        <strong><%= query.searchText || 'All' %></strong>
+                    </div>
+                </div>
+
+                <% if (results.length === 0) { %>
+                    <div class="empty-search-state">
+                        <img src="/images/no-result-found.png" alt="No results found">
+                        <div class="empty-search-copy">
+                            <h2>No matching PGs found yet.</h2>
+                            <p>
+                                There are no properties matching your current filters for
+                                <strong><%= query.searchText %></strong>.
+                                That usually means the city has no listings yet, or the filters are too narrow.
+                            </p>
+                            <ul>
+                                <li>Try searching by city name only first.</li>
+                                <li>Remove rating, type, or price filters and search again.</li>
+                                <li>Use the city browsing page to explore top locations manually.</li>
+                            </ul>
+                            <div class="empty-search-actions">
+                                <a href="/property/search" class="btn btn-primary">Browse Cities</a>
+                                <button type="button" class="btn btn-outline-primary" onclick="resetFilters()">Clear Filters</button>
+                            </div>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <ul class="results-grid">
+                        <% for (let res of results) { %>
+                            <li>
+                                <article class="result-card">
+                                    <img
+                                        src="<%= (res.images && res.images[0]) || '/images/house-fallback.svg' %>"
+                                        alt="<%= res.name %>"
+                                        class="result-card-image"
+                                    >
+
+                                    <div class="result-card-body">
+                                        <div class="result-card-top">
+                                            <div>
+                                                <h3><%= res.name %></h3>
+                                                <p class="result-card-address">
+                                                    <%= res.address.addL1 %><%= res.address.addL2 ? `, ${res.address.addL2}` : '' %>,
+                                                    <%= res.address.city %>, <%= res.address.state %>
+                                                </p>
+                                            </div>
+
+                                            <span class="result-pill text-capitalize"><%= res.type === 'co' ? 'Co-Living' : res.type %></span>
+                                        </div>
+
+                                        <div class="result-highlights">
+                                            <div class="result-highlight">
+                                                <span>Monthly Rate</span>
+                                                <strong>₹ <%= res.rate %></strong>
+                                            </div>
+                                            <div class="result-highlight">
+                                                <span>Booking Amount</span>
+                                                <strong>₹ <%= res.bookingMoney %></strong>
+                                            </div>
+                                            <div class="result-highlight">
+                                                <span>Rating</span>
+                                                <strong class="stars" data-stars="<%= res.rating %>"></strong>
+                                            </div>
+                                            <div class="result-highlight">
+                                                <span>Interested</span>
+                                                <strong><%= res.interested %> people</strong>
+                                            </div>
+                                            <div class="result-highlight">
+                                                <span>Property ID</span>
+                                                <strong><%= res.id %></strong>
+                                            </div>
+                                            <div class="result-highlight">
+                                                <span>Operating Since</span>
+                                                <strong><%= res.since %></strong>
+                                            </div>
+                                        </div>
+
+                                        <div class="result-card-footer">
+                                            <div class="result-card-links">
+                                                <a class="btn btn-primary" href="/property/<%= res.id %>" target="_blank" rel="noopener noreferrer">View Property</a>
+                                                <% if (res.exactLocationLink) { %>
+                                                    <a class="btn btn-outline-primary" href="<%= res.exactLocationLink %>" target="_blank" rel="noopener noreferrer">Map Pin</a>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            </li>
+                        <% } %>
                     </ul>
-                    <div class="empty-search-actions">
-                        <a href="/property/search" class="btn btn-primary">Browse Cities</a>
-                        <button type="button" class="btn btn-outline-primary" onclick="resetFilters()">Clear Filters</button>
-                    </div>
-                </div>
-            </div>
-        <% } else { %>
-        <ul style="list-style: none" class="ps-0">
-            <% for (let res of results) { %>
-            <li>
-                <div class="card prop-card">
-                    <div class="card-header small text-muted py-1 justify-content-between d-flex bg-white">
-                        <span class="px-2 px-md-5 id-hover">Property ID: <%= res.id %></span>
-                        <span class="px-2 px-md-5 count-hover">Interested Count: <%= res.interested %></span>
-                    </div>
-                    <div class="container col-12 p-0 m-0 d-flex flex-md-row flex-column">
-                        <img src="<%= res.images[0] %>" alt="" class="card-img m-2 col-10 col-md-5 col-lg-3 mx-auto" style="aspect-ratio: 1; object-fit: cover">
-                        <div class="card-body col-11 col-md-8">
-                            <h4 class=""><%= res.name %></h4>
-                            <p class="fw-light"><%= res.address.addL1 %>, <%= res.address.addL2 %>, <%= res.address.city %>, <%= res.address.state %></p>
-                            <div class="row d-flex justify-content-start column-gap-2">
-                                <div class="w-auto h5 fw-light">Genders:</div>
-                                <div class="w-auto h5 text-capitalize"><%= res.type %></div>
-                            </div>
-                            <div class="row d-flex justify-content-start column-gap-2">
-                                <div class="w-auto h5 fw-light">Rate:</div>
-                                <div class="w-auto h5" ><%= res.rate %> Rs</div>
-                            </div>
-                            <div class="row d-flex justify-content-start column-gap-2">
-                                <div class="w-auto h5 fw-light">Rating:</div>
-                                <div class="w-auto h5 stars" data-stars="<%= res.rating %>"></div>
-                            </div>
-                            <div class="row d-flex justify-content-start column-gap-2">
-                                <div class="w-auto h5 fw-light">Since:</div>
-                                <div class="w-auto h5"><%= res.since %></div>
-                            </div>
-                            <div class="row d-flex justify-content-start column-gap-2">
-                                <div class="w-auto h5 fw-light">Booking Amount:</div>
-                                <div class="w-auto h5"><%= res.bookingMoney %> Rs.</div>
-                            </div>
-                            <a role="button" class="btn btn-outline-primary" href="/property/<%= res.id %>" target="_blank">See Property!</a>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <% } %>
-        </ul>
 
-        <div class="row">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-end">
-                    <li class="page-item"><a role="button" id="prev-link" class="page-link <%= isFirst && 'disabled' %>" onclick="goto(<%- query.skip - 10 %>)">Previous</a></li>
-                    <li class="page-item"><a role="button" id="next-link" class="page-link <%= isLast && 'disabled' %>" onclick="goto(<%- query.skip + 10 %>)">Next</a></li>
-                </ul>
-            </nav>
+                    <nav class="search-pagination" aria-label="Page navigation">
+                        <ul class="pagination justify-content-end">
+                            <li class="page-item">
+                                <a
+                                    role="button"
+                                    id="prev-link"
+                                    class="page-link <%= isFirst ? 'disabled' : '' %>"
+                                    data-skip="<%= Number(query.skip || 0) - 10 %>"
+                                    href="#"
+                                >Previous</a>
+                            </li>
+                            <li class="page-item">
+                                <a
+                                    role="button"
+                                    id="next-link"
+                                    class="page-link <%= isLast ? 'disabled' : '' %>"
+                                    data-skip="<%= Number(query.skip || 0) + 10 %>"
+                                    href="#"
+                                >Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                <% } %>
+            </div>
         </div>
-        <% } %>
-    </div>
-    </div>
     </div>
 </section>
 
 <script>
-	const select = document.getElementById('search-type');
-	const search = document.getElementById('search-text');
+    const select = document.getElementById('search-type');
+    const search = document.getElementById('search-text');
+    const form = document.getElementById('search-form');
+    const prevLink = document.getElementById('prev-link');
+    const nextLink = document.getElementById('next-link');
+    const currentSkip = Number(form.dataset.currentSkip || 0);
+    const resCount = Number(form.dataset.resCount || 10);
+    const baseSearchType = form.dataset.baseSearchType || '';
+    const baseSearchText = form.dataset.baseSearchText || '';
 
-	function modifyInput () {
-		if (select.value === 'text')
-			search.removeAttribute('pattern');
-		else
-			search.setAttribute('pattern', '\\d{6}');
-	}
+    function modifyInput() {
+        if (select.value === 'text')
+            search.removeAttribute('pattern');
+        else
+            search.setAttribute('pattern', '\\d{6}');
+    }
 
-	const form = document.getElementById('search-form');
+    modifyInput();
 
-	form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
-		const query = new URLSearchParams(new FormData(form)).toString() + "<%- `&skip=${query.skip}` %>" + "<%- `&resCount=${query.resCount}` %>";
-		window.location = '/property?' + query;
+        const params = new URLSearchParams(new FormData(form));
+        params.set('skip', currentSkip);
+        params.set('resCount', resCount);
+        window.location = '/property?' + params.toString();
     });
 
-	for (let obj of document.getElementsByClassName('stars'))
-		obj.innerHTML = getStars(obj.dataset.stars);
-
-	function getStars(rating) {
-		let i;
-		rating = Math.round(rating * 2) / 2;
-		let output = [];
-
-		for (i = rating; i >= 1; i--)
-			output.push('<i class="fa fa-star" aria-hidden="true" style="color: gold;"></i>&nbsp;');
-
-		if (i === .5) output.push('<i class="fa fa-star-half-o" aria-hidden="true" style="color: gold;"></i>&nbsp;');
-
-		for (let i = (5 - rating); i >= 1; i--)
-			output.push('<i class="fa fa-star-o" aria-hidden="true" style="color: gold;"></i>&nbsp;');
-
-		return output.join('');
-	}
-
-	function goto (skip) {
-		const query = new URLSearchParams(new FormData(form)).toString() + `&skip=${skip}` + "<%- `&resCount=${query.resCount}` %>";
-		window.location = '/property?' + query;
+    for (const link of [prevLink, nextLink]) {
+        if (!link) continue;
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (link.classList.contains('disabled')) return;
+            goto(Number(link.dataset.skip || 0));
+        });
     }
 
-    function resetFilters () {
-        const query = new URLSearchParams({
-            searchType: '<%= query.searchType %>',
-            searchText: '<%= query.searchText %>'
-        }).toString();
-        window.location = '/property?' + query;
+    for (const obj of document.getElementsByClassName('stars'))
+        obj.innerHTML = getStars(obj.dataset.stars);
+
+    function getStars(rating) {
+        let i;
+        rating = Math.round(rating * 2) / 2;
+        const output = [];
+
+        for (i = rating; i >= 1; i--)
+            output.push('<i class="fa fa-star" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+
+        if (i === 0.5)
+            output.push('<i class="fa fa-star-half-o" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+
+        for (let j = (5 - rating); j >= 1; j--)
+            output.push('<i class="fa fa-star-o" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+
+        return output.join('');
     }
 
+    function goto(skip) {
+        const params = new URLSearchParams(new FormData(form));
+        params.set('skip', skip);
+        params.set('resCount', resCount);
+        window.location = '/property?' + params.toString();
+    }
 
+    function resetFilters() {
+        const params = new URLSearchParams({
+            searchType: baseSearchType,
+            searchText: baseSearchText
+        });
+        window.location = '/property?' + params.toString();
+    }
 </script>

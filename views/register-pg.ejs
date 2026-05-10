@@ -1,493 +1,743 @@
 <!-- PG REGISTRATION FORM -->
 <% layout('layout/boilerplate.ejs') -%>
 
-<section>
-    <h1 class="text-center my-4">PG Registration Form</h1>
-    <hr style="all: revert; height: 1px; background-color: black">
+<style>
+    .pg-form-page {
+        background: linear-gradient(180deg, #f5fafc 0%, #eef4f7 100%);
+        padding: 1rem 0 4rem;
+    }
+
+    .pg-form-shell {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .pg-form-card {
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        border-radius: 1.8rem;
+        box-shadow: 0 1.3rem 2.8rem rgba(31, 56, 88, 0.08);
+        overflow: hidden;
+    }
+
+    .pg-form-hero {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(228, 241, 247, 0.96) 100%);
+        padding: 2.25rem;
+        position: relative;
+    }
+
+    .pg-form-hero::before {
+        background: radial-gradient(circle, rgba(186, 220, 235, 0.42) 0%, rgba(186, 220, 235, 0) 72%);
+        content: '';
+        height: 18rem;
+        position: absolute;
+        right: -5rem;
+        top: -5rem;
+        width: 18rem;
+    }
+
+    .pg-form-hero-grid {
+        align-items: end;
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: minmax(0, 1.8fr) minmax(260px, 0.9fr);
+        position: relative;
+        z-index: 1;
+    }
+
+    .pg-form-eyebrow {
+        color: #4c86a8;
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        margin-bottom: 0.8rem;
+        text-transform: uppercase;
+    }
+
+    .pg-form-hero h1 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-size: clamp(2rem, 3.6vw, 3rem);
+        font-style: italic;
+        margin-bottom: 0.65rem;
+    }
+
+    .pg-form-hero p {
+        color: #597183;
+        margin: 0;
+        max-width: 44rem;
+    }
+
+    .pg-hero-stat {
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(76, 134, 168, 0.16);
+        border-radius: 1.6rem;
+        display: grid;
+        gap: 1rem;
+        padding: 1.35rem;
+    }
+
+    .pg-hero-stat h2 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.35rem;
+        margin: 0;
+    }
+
+    .pg-hero-stat p {
+        color: #5e7687;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    .pg-form-body {
+        padding: 2rem;
+    }
+
+    .pg-form-section + .pg-form-section {
+        margin-top: 2rem;
+    }
+
+    .pg-form-section h2 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.45rem;
+        margin-bottom: 0.35rem;
+    }
+
+    .pg-form-section p {
+        color: #5e7687;
+        margin-bottom: 1.2rem;
+    }
+
+    .pg-form-grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pg-form-grid.three {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .pg-field {
+        display: grid;
+        gap: 0.45rem;
+    }
+
+    .pg-field.full {
+        grid-column: 1 / -1;
+    }
+
+    .pg-field label,
+    .pg-chip-group > span {
+        color: #355166;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .pg-field .form-control,
+    .pg-field .form-select {
+        background: #fbfdfe;
+        border: 1px solid #d9e6ee;
+        border-radius: 1rem;
+        box-shadow: none;
+        min-height: 3.35rem;
+        padding: 0.8rem 1rem;
+    }
+
+    .pg-field textarea.form-control {
+        min-height: 8rem;
+    }
+
+    .pg-field .input-group-text {
+        background: #eef5f8;
+        border: 1px solid #d9e6ee;
+        border-radius: 1rem 0 0 1rem;
+        color: #35617c;
+        min-width: 3.4rem;
+        justify-content: center;
+    }
+
+    .pg-field .input-group .form-control {
+        border-left: 0;
+        border-radius: 0 1rem 1rem 0;
+    }
+
+    .pg-field-help {
+        color: #6b8393;
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    .pg-chip-group {
+        display: grid;
+        gap: 0.8rem;
+    }
+
+    .pg-chip-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .pg-chip {
+        align-items: center;
+        background: #f8fbfd;
+        border: 1px solid rgba(76, 134, 168, 0.14);
+        border-radius: 999px;
+        display: inline-flex;
+        gap: 0.5rem;
+        min-width: 138px;
+        padding: 0.7rem 1rem;
+    }
+
+    .pg-chip .form-check-input {
+        margin: 0;
+        position: static;
+    }
+
+    .pg-chip label {
+        color: #4f6778;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .pg-detail-list {
+        display: grid;
+        gap: 0.8rem;
+    }
+
+    .pg-detail-row {
+        align-items: center;
+        background: #f8fbfd;
+        border: 1px solid rgba(76, 134, 168, 0.14);
+        border-radius: 1.2rem;
+        display: grid;
+        gap: 0.75rem;
+        grid-template-columns: auto 1fr minmax(180px, 260px);
+        padding: 0.85rem 1rem;
+    }
+
+    .pg-detail-row .form-check-input {
+        margin: 0;
+    }
+
+    .pg-detail-row label {
+        color: #4f6778;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .pg-detail-row .form-control {
+        min-height: 2.9rem;
+    }
+
+    .pg-gallery-upload {
+        border: 1px dashed rgba(76, 134, 168, 0.24);
+        border-radius: 1.4rem;
+        padding: 1rem;
+    }
+
+    .pg-submit {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 1.75rem;
+    }
+
+    .pg-submit .btn {
+        border-radius: 999px;
+        padding: 0.8rem 1.5rem;
+    }
+
+    @media (max-width: 991.98px) {
+        .pg-form-hero-grid,
+        .pg-form-grid,
+        .pg-form-grid.three,
+        .pg-detail-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .pg-form-hero,
+        .pg-form-body {
+            padding: 1.35rem;
+        }
+    }
+</style>
+
+<section class="pg-form-page">
     <div class="container">
-        <form id="form" action='/property/' method="post" class="card col-lg-10 py-5 mx-auto px-2 border-0 validation-required" enctype="multipart/form-data" novalidate>
-            <div class="form-group row">
-                    <label class="col-4 col-form-label" for="name">Name</label>
-                    <div class="col-8">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <i class="fa fa-home"></i>
-                                </div>
-                            </div>
-                            <input id="name" name="name" placeholder="PG Name" type="text" class="form-control" required="required" aria-describedby="nameHelpBlock">
-                        </div>
-                        <span id="nameHelpBlock" class="form-text text-muted">People can find you by your PG name, keep it short and simple.</span>
-                    </div>
-                </div>
-
-                <br>
-                <h3>ADDRESS DETAILS</h3>
-                <hr class="hr hr-blurry bg-black" />
-                <div class="form-group row">
-                    <label for="addBuilding" class="col-4 col-form-label">Building Address</label>
-                    <div class="col-8">
-                        <input id="addBuilding" name="addBuilding" placeholder="Building Address" type="text" class="form-control" required="required">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="addL1" class="col-4 col-form-label">Address Line 1</label>
-                    <div class="col-8">
-                        <input id="addL1" name="addL1" placeholder="Address Line 1" type="text" class="form-control" required="required">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="addL2" class="col-4 col-form-label">Address Line 2</label>
-                    <div class="col-8">
-                        <input id="addL2" name="addL2" placeholder="Address Line 2" type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="landmark" class="col-4 col-form-label">Landmark</label>
-                    <div class="col-8">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <i class="fa fa-map-marker"></i>
-                                </div>
-                            </div>
-                            <input id="landmark" name="landmark" placeholder="Enter nearest landmark" type="text" class="form-control" required="required">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="state" class="col-4 col-form-label">State</label>
-                    <div class="col-8">
-                        <select id="state" name="state" type="text" class="form-control" required="required">
-                            <option value="">Select Now</option>
-
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="city" class="col-4 col-form-label">City</label>
-                    <div class="col-8">
-                        <select id="city" name="city" type="text" class="form-control" required="required"></select>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="zipCode" class="col-4 col-form-label">Zip Code</label>
-                    <div class="col-8">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <i class="fa fa-location-arrow"></i>
-                                </div>
-                            </div>
-                            <input id="zipCode" name="zipCode" placeholder="Zip Code" type="text" pattern="\d{6}" class="form-control" required="required">
-                        </div>
-                    </div>
-                </div>
-
-            <br>
-            <h3>BASIC DETAILS</h3>
-            <hr class="hr hr-blurry bg-black" />
-
-            <div class="form-group row">
-                    <label for="maxOccupancy" class="col-4 col-form-label">Max Occupancy</label>
-                    <div class="col-8">
-                        <input id="maxOccupancy" name="maxOccupancy" placeholder="Enter Maximum Occupancy" type="number" min="1" max="1000" class="form-control" aria-describedby="maxOccupancyHelpBlock" required="required">
-                        <span id="maxOccupancyHelpBlock" class="form-text text-muted">Maximum number of people your PG can accommodate at one time.</span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-4">Type</label>
-                    <div class="col-8">
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input name="type" id="type_0" type="radio" aria-describedby="typeHelpBlock" required="required" class="custom-control-input" value="male">
-                            <label for="type_0" class="custom-control-label">Male</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input name="type" id="type_1" type="radio" aria-describedby="typeHelpBlock" required="required" class="custom-control-input" value="female">
-                            <label for="type_1" class="custom-control-label">Female</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input name="type" id="type_2" type="radio" aria-describedby="typeHelpBlock" required="required" class="custom-control-input" value="co">
-                            <label for="type_2" class="custom-control-label">Co-Living</label>
-                        </div>
-                        <span id="typeHelpBlock" class="form-text text-muted">Enter gender of tenants.</span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="desc" class="col-4 col-form-label">Description</label>
-                    <div class="col-8">
-                        <textarea id="desc" name="desc" cols="40" rows="5" class="form-control" aria-describedby="descHelpBlock" required="required"></textarea>
-                        <span id="descHelpBlock" class="form-text text-muted">Enter Description of PG under 1000 characters.</span>
-                    </div>
-                </div>
-
-                    <div class="form-group row">
-                        <label class="col-4 col-form-label">Beds</label>
-                        <div class="col-8">
-                            <div class="custom-controls-stacked">
-                                <div class="custom-control custom-checkbox">
-                                    <input name="occupancy" id="beds_0" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="single">
-                                    <label for="beds_0" class="custom-control-label">Single</label>
-                                </div>
-                            </div>
-                            <div class="custom-controls-stacked">
-                                <div class="custom-control custom-checkbox">
-                                    <input name="occupancy" id="beds_1" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="double">
-                                    <label for="beds_1" class="custom-control-label">Double</label>
-                                </div>
-                            </div>
-                        </div>
+        <div class="pg-form-shell">
+            <div class="pg-form-card pg-form-hero">
+                <div class="pg-form-hero-grid">
+                    <div>
+                        <p class="pg-form-eyebrow">Property Details</p>
+                        <h1>Register your PG listing.</h1>
+                        <p>Create a property page that feels complete from day one: clear details, exact location, rules, pricing, and strong visuals that help riders decide faster.</p>
                     </div>
 
-                    <div class="form-group row">
-                    <label for="tagLine" class="col-4 col-form-label">Tag Line</label>
-                    <div class="col-8">
-                        <input id="tagLine" name="tagLine" placeholder="Enter Tag Line" type="text" class="form-control" aria-describedby="tagLineHelpBlock" required="required">
-                        <span id="tagLineHelpBlock" class="form-text text-muted">Keep it simple and catchy</span>
+                    <div class="pg-hero-stat">
+                        <h2>Listing Checklist</h2>
+                        <p>Add a Google Maps pin, describe the stay properly, upload up to 5 images, and include charges and rules in one pass.</p>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <label for="since" class="col-4 col-form-label">Since</label>
-                    <div class="col-8">
-                        <input id="since" name="since" placeholder="Enter starting year" type="number" min="1947" max="<%= new Date().getFullYear() %>" class="form-control" required="required">
-                    </div>
-                </div>
-
-                <br>
-                <h3>RULES & AMENITIES</h3>
-                <hr class="hr hr-blurry bg-black" />
-
-            <div class="form-group row">
-                <label class="col-4 col-form-label">Food Related Rules</label>
-                <div class="col-8">
-                    <div class="custom-controls-stacked mb-2">
-                        <div class="custom-control custom-checkbox d-flex justify-content-between has-text-input">
-                            <input name="food" id="food_0" type="checkbox" aria-describedby="foodHelpBlock" class="custom-control-input" value="food-available">
-                            <label for="food_0" class="custom-control-label">Food Available</label>
-                            <input name="foodText" type="text" aria-describedby="foodHelpTextBlock" class="d-inline form-control-sm form-control col-5" placeholder="Enter availability details"%>/>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked mb-2">
-                        <div class="custom-control custom-checkbox d-flex justify-content-between has-text-input">
-                            <input name="food" id="food_1" type="checkbox" aria-describedby="foodHelpBlock" class="custom-control-input" value="meals-provided">
-                            <label for="food_1" class="custom-control-label">Meal Type</label>
-                            <input name="foodText" type="text" aria-describedby="foodHelpTextBlock" class="d-inline form-control-sm form-control col-5" placeholder="Enter Veg / Non-Veg"/>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked mb-2">
-                        <div class="custom-control custom-checkbox d-flex justify-content-between has-text-input">
-                            <input name="food" id="food_2" type="checkbox" aria-describedby="foodHelpBlock" class="custom-control-input" value="fridge">
-                            <label for="food_2" class="custom-control-label">Fridge</label>
-                            <input name="foodText" type="text" aria-describedby="foodHelpTextBlock" class="d-inline form-control-sm form-control col-5" placeholder="Enter Details"/>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked mb-2">
-                        <div class="custom-control custom-checkbox d-flex justify-content-between has-text-input">
-                            <input name="food" id="food_3" type="checkbox" aria-describedby="foodHelpBlock" class="custom-control-input" value="food-charges">
-                            <label for="food_3" class="custom-control-label">Food Charges</label>
-                            <input name="foodText" type="text" aria-describedby="foodHelpTextBlock" class="d-inline form-control-sm form-control col-5" placeholder="Enter Included / Not-Included"/>
-                        </div>
-                    </div>
-                    <span id="foodHelpBlock" class="form-text text-muted">Enter food related rules in the PG, you can also enter additional details.</span>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-4 col-form-label">Amenities Provided</label>
-                <div class="col-8">
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="amenities" id="amenities_0" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="wifi">
-                            <label for="amenities_0" class="custom-control-label">WiFi</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="amenities" id="amenities_1" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="power-backup">
-                            <label for="amenities_1" class="custom-control-label">Power Backup</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="amenities" id="amenities_2" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="room-cleaning">
-                            <label for="amenities_2" class="custom-control-label">Room Cleaning Service</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="amenities" id="amenities_3" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="tv">
-                            <label for="amenities_3" class="custom-control-label">TV</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="amenities" id="amenities_4" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="lift">
-                            <label for="amenities_4" class="custom-control-label">Lift</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="amenities" id="amenities_5" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="laundary">
-                            <label for="amenities_5" class="custom-control-label">Laundary</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="amenities" id="amenities_6" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="fridge">
-                            <label for="amenities_6" class="custom-control-label">Fridge</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="amenities" id="amenities_7" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="water-cooler">
-                            <label for="amenities_7" class="custom-control-label">Water Cooler</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="amenities" id="amenities_8" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="warden">
-                            <label for="amenities_8" class="custom-control-label">Warden</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="amenities" id="amenities_9" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="microwave">
-                            <label for="amenities_9" class="custom-control-label">Microwave</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="amenities" id="amenities_10" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="parking">
-                            <label for="amenities_10" class="custom-control-label">Parking</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="amenities" id="amenities_11" type="checkbox" aria-describedby="amenitiesHelpBlock" class="custom-control-input" value="car-parking">
-                            <label for="amenities_11" class="custom-control-label">4-Wheeler Parking</label>
-                        </div>
-                    </div>
-                    <span id="amenitiesHelpBlock" class="form-text text-muted">Check amenities available at the PG.</span>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-4 col-form-label">House Rules</label>
-                <div class="col-8">
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="rules" id="rules_0" type="checkbox" aria-describedby="rulesHelpBlock" class="custom-control-input" value="visitor">
-                            <label for="rules_0" class="custom-control-label">Visitor Entry</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="rules" id="rules_1" type="checkbox" aria-describedby="rulesHelpBlock" class="custom-control-input" value="non-veg-food">
-                            <label for="rules_1" class="custom-control-label">Non-Veg Food</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="rules" id="rules_2" type="checkbox" aria-describedby="rulesHelpBlock" class="custom-control-input" value="other-gender">
-                            <label for="rules_2" class="custom-control-label">Other gender</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="rules" id="rules_3" type="checkbox" aria-describedby="rulesHelpBlock" class="custom-control-input" value="smoking">
-                            <label for="rules_3" class="custom-control-label">Smoking</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="rules" id="rules_4" type="checkbox" aria-describedby="rulesHelpBlock" class="custom-control-input" value="drinking">
-                            <label for="rules_4" class="custom-control-label">Drinking</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="rules" id="rules_5" type="checkbox" aria-describedby="rulesHelpBlock" class="custom-control-input" value="loud-music">
-                            <label for="rules_5" class="custom-control-label">Loud Music</label>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked">
-                        <div class="custom-control custom-checkbox">
-                            <input name="rules" id="rules_6" type="checkbox" aria-describedby="rulesHelpBlock" class="custom-control-input" value="party">
-                            <label for="rules_6" class="custom-control-label">Party</label>
-                        </div>
-                    </div>
-                    <span id="rulesHelpBlock" class="form-text text-muted">Check what is allowed in the PG</span>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-4 col-form-label">Other Details</label>
-                <div class="col-8">
-                    <div class="custom-controls-stacked mb-2">
-                        <div class="custom-control custom-checkbox d-flex justify-content-between has-text-input">
-                            <input name="otherCharges" id="otherCharges_0" type="checkbox" aria-describedby="otherChargesHelpBlock" class="custom-control-input" value="laundary">
-                            <label for="otherCharges_0" class="custom-control-label">Laundary</label>
-                            <input name="otherChargesText" type="text" aria-describedby="otherChargesHelpTextBlock" class="d-inline form-control-sm form-control col-5" placeholder="Enter Included / Not - Included"/>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked mb-2">
-                        <div class="custom-control custom-checkbox d-flex justify-content-between has-text-input">
-                            <input name="otherCharges" id="otherCharges_1" type="checkbox" aria-describedby="otherChargesHelpBlock" class="custom-control-input" value="notice-period">
-                            <label for="otherCharges_1" class="custom-control-label">Notice Period</label>
-                            <input name="otherChargesText" type="text" aria-describedby="otherChargesHelpTextBlock" class="d-inline form-control-sm form-control col-5" placeholder="Enter Notice Period Length"/>
-                        </div>
-                    </div>
-                    <div class="custom-controls-stacked mb-2">
-                        <div class="custom-control custom-checkbox d-flex justify-content-between has-text-input">
-                            <input name="otherCharges" id="otherCharges_2" type="checkbox" aria-describedby="otherChargesHelpBlock" class="custom-control-input" value="gate-time">
-                            <label for="otherCharges_2" class="custom-control-label">Gate Closing Time</label>
-                            <input name="otherChargesText" type="text" aria-describedby="otherChargesHelpTextBlock" class="d-inline form-control-sm form-control col-5" placeholder="Enter Gate Closing Time / No Closing Time"/>
-                        </div>
-                    </div>
-                    <span id="otherChargesHelpBlock" class="form-text text-muted">Enter other charges & other Information and their details.</span>
                 </div>
             </div>
 
-                <br>
-                <h3>MONEY DETAILS</h3>
-                <hr class="hr hr-blurry bg-black" />
+            <div class="pg-form-card pg-form-body">
+                <form id="form" action="/property/" method="post" enctype="multipart/form-data" class="validation-required" novalidate>
+                    <div class="pg-form-section">
+                        <h2>Basic Information</h2>
+                        <p>Start with the essentials riders see first in search and detail views.</p>
+                        <div class="pg-form-grid">
+                            <div class="pg-field">
+                                <label for="name">PG Name</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <i class="fa fa-home"></i>
+                                        </div>
+                                    </div>
+                                    <input id="name" name="name" placeholder="Enter PG name" type="text" class="form-control" required>
+                                </div>
+                                <p class="pg-field-help">Keep the name short and memorable so users can find it easily.</p>
+                            </div>
 
-                <div class="form-group row">
-                    <label for="rate" class="col-4 col-form-label">Rate</label>
-                    <div class="col-8">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <i class="fa fa-rupee"></i>
+                            <div class="pg-field">
+                                <label for="tagLine">Tag Line</label>
+                                <input id="tagLine" name="tagLine" placeholder="Safe stay near campus with meals included" type="text" class="form-control" required>
+                                <p class="pg-field-help">A short one-line summary that appears under the property name.</p>
+                            </div>
+
+                            <div class="pg-field">
+                                <label for="maxOccupancy">Max Occupancy</label>
+                                <input id="maxOccupancy" name="maxOccupancy" placeholder="Enter max occupancy" type="number" min="1" max="1000" class="form-control" required>
+                            </div>
+
+                            <div class="pg-field">
+                                <label for="availableRooms">Available Rooms</label>
+                                <input id="availableRooms" name="availableRooms" placeholder="Enter number of rooms available for booking" type="number" min="1" max="1000" class="form-control" required>
+                                <p class="pg-field-help">This controls actual booking availability across selected dates.</p>
+                            </div>
+
+                            <div class="pg-field">
+                                <label for="since">Operating Since</label>
+                                <input id="since" name="since" placeholder="Enter starting year" type="number" min="1947" max="<%= new Date().getFullYear() %>" class="form-control" required>
+                            </div>
+
+                            <div class="pg-field full">
+                                <label for="desc">Description</label>
+                                <textarea id="desc" name="desc" rows="5" class="form-control" placeholder="Describe rooms, surroundings, commute, meals, cleanliness, security, and what makes the property a good fit." required></textarea>
+                                <p class="pg-field-help">Write at least 50 characters so the listing feels informative and credible.</p>
+                            </div>
+
+                            <div class="pg-field full">
+                                <div class="pg-chip-group">
+                                    <span>Property Type</span>
+                                    <div class="pg-chip-list">
+                                        <div class="pg-chip">
+                                            <input name="type" id="type_0" type="radio" class="form-check-input" value="male" required>
+                                            <label for="type_0">Male</label>
+                                        </div>
+                                        <div class="pg-chip">
+                                            <input name="type" id="type_1" type="radio" class="form-check-input" value="female" required>
+                                            <label for="type_1">Female</label>
+                                        </div>
+                                        <div class="pg-chip">
+                                            <input name="type" id="type_2" type="radio" class="form-check-input" value="co" required>
+                                            <label for="type_2">Co-Living</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <input id="rate" name="rate" placeholder="Enter Price / Month" type="number" class="form-control" required="required">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="bookingMoney" class="col-4 col-form-label">Booking Amount</label>
-                    <div class="col-8">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <i class="fa fa-rupee"></i>
+
+                            <div class="pg-field full">
+                                <div class="pg-chip-group">
+                                    <span>Bed Types</span>
+                                    <div class="pg-chip-list">
+                                        <div class="pg-chip">
+                                            <input name="occupancy" id="beds_0" type="checkbox" class="form-check-input" value="single">
+                                            <label for="beds_0">Single</label>
+                                        </div>
+                                        <div class="pg-chip">
+                                            <input name="occupancy" id="beds_1" type="checkbox" class="form-check-input" value="double">
+                                            <label for="beds_1">Double</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <input id="bookingMoney" name="bookingMoney" placeholder="Enter Booking Amount" type="number" min="1" max="10000" class="form-control" aria-describedby="bookingMoneyHelpBlock" required="required">
                         </div>
-                        <span id="bookingMoneyHelpBlock" class="form-text text-muted">Maximum booking amount is 10,000 ₹.</span>
                     </div>
-                </div>
 
-                <br>
-                <h3>IMAGES</h3>
-                <hr class="hr hr-blurry bg-black" />
-                <div class="form-group row">
-                    <label for="property-image" class="col-4 col-form-label">Property Images</label>
-                    <div class="col-8">
-                        <input type="file" name="property-image" class="form-control" multiple>
-                        <span class="form-text text-muted">Choose at max 5 files, keep each file size below 1 MB.</span>
+                    <div class="pg-form-section">
+                        <h2>Address Details</h2>
+                        <p>Help users understand both the full address and the exact map pin for navigation.</p>
+                        <div class="pg-form-grid three">
+                            <div class="pg-field full">
+                                <label for="addBuilding">Building Address</label>
+                                <input id="addBuilding" name="addBuilding" placeholder="Building / hostel / house name" type="text" class="form-control" required>
+                            </div>
+
+                            <div class="pg-field">
+                                <label for="addL1">Address Line 1</label>
+                                <input id="addL1" name="addL1" placeholder="Street / area / locality" type="text" class="form-control" required>
+                            </div>
+
+                            <div class="pg-field">
+                                <label for="addL2">Address Line 2</label>
+                                <input id="addL2" name="addL2" placeholder="Optional additional line" type="text" class="form-control">
+                            </div>
+
+                            <div class="pg-field">
+                                <label for="landmark">Landmark</label>
+                                <input id="landmark" name="landmark" placeholder="Nearest known landmark" type="text" class="form-control" required>
+                            </div>
+
+                            <div class="pg-field">
+                                <label for="state">State</label>
+                                <select id="state" name="state" class="form-select" required>
+                                    <option value="">Select state</option>
+                                </select>
+                            </div>
+
+                            <div class="pg-field">
+                                <label for="city">City</label>
+                                <select id="city" name="city" class="form-select" required disabled>
+                                    <option value="">Select city</option>
+                                </select>
+                            </div>
+
+                            <div class="pg-field">
+                                <label for="zipCode">Zip Code</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <i class="fa fa-location-arrow"></i>
+                                        </div>
+                                    </div>
+                                    <input id="zipCode" name="zipCode" placeholder="6-digit zip code" type="text" pattern="\d{6}" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="pg-field full">
+                                <label for="exactLocationLink">Exact Google Maps Pin Link</label>
+                                <input id="exactLocationLink" name="exactLocationLink" placeholder="Paste the Google Maps location URL of the exact pin" type="url" class="form-control" required>
+                                <p class="pg-field-help">Open Google Maps, drop the exact pin, tap Share, and paste the link here.</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
+                    <div class="pg-form-section">
+                        <h2>Rules, Amenities, and Other Details</h2>
+                        <p>Keep this section practical. Riders mostly care about what is available, what is allowed, and what costs extra.</p>
 
-                <div class="form-group row">
-                    <div class="offset-4 col-8">
+                        <div class="pg-form-grid">
+                            <div class="pg-field full">
+                                <label>Food Related Rules</label>
+                                <div class="pg-detail-list">
+                                    <div class="pg-detail-row has-text-input">
+                                        <input name="food" id="food_0" type="checkbox" class="form-check-input" value="food-available">
+                                        <label for="food_0">Food Available</label>
+                                        <input name="foodText" type="text" class="form-control" placeholder="Breakfast and dinner available">
+                                    </div>
+                                    <div class="pg-detail-row has-text-input">
+                                        <input name="food" id="food_1" type="checkbox" class="form-check-input" value="meals-provided">
+                                        <label for="food_1">Meal Type</label>
+                                        <input name="foodText" type="text" class="form-control" placeholder="Veg / Non-Veg">
+                                    </div>
+                                    <div class="pg-detail-row has-text-input">
+                                        <input name="food" id="food_2" type="checkbox" class="form-check-input" value="fridge">
+                                        <label for="food_2">Fridge</label>
+                                        <input name="foodText" type="text" class="form-control" placeholder="Shared fridge on each floor">
+                                    </div>
+                                    <div class="pg-detail-row has-text-input">
+                                        <input name="food" id="food_3" type="checkbox" class="form-check-input" value="food-charges">
+                                        <label for="food_3">Food Charges</label>
+                                        <input name="foodText" type="text" class="form-control" placeholder="Included / extra charges">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pg-field full">
+                                <div class="pg-chip-group">
+                                    <span>Amenities Provided</span>
+                                    <div class="pg-chip-list">
+                                        <div class="pg-chip"><input name="amenities" id="amenities_0" type="checkbox" class="form-check-input" value="wifi"><label for="amenities_0">WiFi</label></div>
+                                        <div class="pg-chip"><input name="amenities" id="amenities_1" type="checkbox" class="form-check-input" value="power-backup"><label for="amenities_1">Power Backup</label></div>
+                                        <div class="pg-chip"><input name="amenities" id="amenities_2" type="checkbox" class="form-check-input" value="room-cleaning"><label for="amenities_2">Room Cleaning</label></div>
+                                        <div class="pg-chip"><input name="amenities" id="amenities_3" type="checkbox" class="form-check-input" value="tv"><label for="amenities_3">TV</label></div>
+                                        <div class="pg-chip"><input name="amenities" id="amenities_4" type="checkbox" class="form-check-input" value="lift"><label for="amenities_4">Lift</label></div>
+                                        <div class="pg-chip"><input name="amenities" id="amenities_5" type="checkbox" class="form-check-input" value="laundary"><label for="amenities_5">Laundry</label></div>
+                                        <div class="pg-chip"><input name="amenities" id="amenities_6" type="checkbox" class="form-check-input" value="fridge"><label for="amenities_6">Fridge</label></div>
+                                        <div class="pg-chip"><input name="amenities" id="amenities_7" type="checkbox" class="form-check-input" value="water-cooler"><label for="amenities_7">Water Cooler</label></div>
+                                        <div class="pg-chip"><input name="amenities" id="amenities_8" type="checkbox" class="form-check-input" value="warden"><label for="amenities_8">Warden</label></div>
+                                        <div class="pg-chip"><input name="amenities" id="amenities_9" type="checkbox" class="form-check-input" value="microwave"><label for="amenities_9">Microwave</label></div>
+                                        <div class="pg-chip"><input name="amenities" id="amenities_10" type="checkbox" class="form-check-input" value="parking"><label for="amenities_10">Parking</label></div>
+                                        <div class="pg-chip"><input name="amenities" id="amenities_11" type="checkbox" class="form-check-input" value="car-parking"><label for="amenities_11">4-Wheeler Parking</label></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pg-field full">
+                                <div class="pg-chip-group">
+                                    <span>House Rules</span>
+                                    <div class="pg-chip-list">
+                                        <div class="pg-chip"><input name="rules" id="rules_0" type="checkbox" class="form-check-input" value="visitor"><label for="rules_0">Visitor Entry</label></div>
+                                        <div class="pg-chip"><input name="rules" id="rules_1" type="checkbox" class="form-check-input" value="non-veg-food"><label for="rules_1">Non-Veg Food</label></div>
+                                        <div class="pg-chip"><input name="rules" id="rules_2" type="checkbox" class="form-check-input" value="other-gender"><label for="rules_2">Other Gender</label></div>
+                                        <div class="pg-chip"><input name="rules" id="rules_3" type="checkbox" class="form-check-input" value="smoking"><label for="rules_3">Smoking</label></div>
+                                        <div class="pg-chip"><input name="rules" id="rules_4" type="checkbox" class="form-check-input" value="drinking"><label for="rules_4">Drinking</label></div>
+                                        <div class="pg-chip"><input name="rules" id="rules_5" type="checkbox" class="form-check-input" value="loud-music"><label for="rules_5">Loud Music</label></div>
+                                        <div class="pg-chip"><input name="rules" id="rules_6" type="checkbox" class="form-check-input" value="party"><label for="rules_6">Party</label></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pg-field full">
+                                <label>Other Charges and Details</label>
+                                <div class="pg-detail-list">
+                                    <div class="pg-detail-row has-text-input">
+                                        <input name="otherCharges" id="otherCharges_0" type="checkbox" class="form-check-input" value="laundary">
+                                        <label for="otherCharges_0">Laundry</label>
+                                        <input name="otherChargesText" type="text" class="form-control" placeholder="Included / extra monthly">
+                                    </div>
+                                    <div class="pg-detail-row has-text-input">
+                                        <input name="otherCharges" id="otherCharges_1" type="checkbox" class="form-check-input" value="notice-period">
+                                        <label for="otherCharges_1">Notice Period</label>
+                                        <input name="otherChargesText" type="text" class="form-control" placeholder="30 days / 60 days">
+                                    </div>
+                                    <div class="pg-detail-row has-text-input">
+                                        <input name="otherCharges" id="otherCharges_2" type="checkbox" class="form-check-input" value="gate-time">
+                                        <label for="otherCharges_2">Gate Closing Time</label>
+                                        <input name="otherChargesText" type="text" class="form-control" placeholder="10:30 PM / no closing time">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pg-form-section">
+                        <h2>Money Details</h2>
+                        <p>Keep the pricing simple and transparent.</p>
+                        <div class="pg-form-grid">
+                            <div class="pg-field">
+                                <label for="rate">Rate Per Month</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa fa-rupee"></i></div>
+                                    </div>
+                                    <input id="rate" name="rate" placeholder="Enter monthly price" type="number" min="1" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="pg-field">
+                                <label for="bookingMoney">Booking Amount</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa fa-rupee"></i></div>
+                                    </div>
+                                    <input id="bookingMoney" name="bookingMoney" placeholder="Enter booking amount" type="number" min="1" max="10000" class="form-control" required>
+                                </div>
+                                <p class="pg-field-help">Maximum booking amount is 10,000 INR.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pg-form-section">
+                        <h2>Images & Videos</h2>
+                        <p>Upload clear images of the room, front view, washroom, or common areas. You can also add videos to showcase the property.</p>
+                        <div class="pg-gallery-upload">
+                            <div class="pg-field">
+                                <label for="property-image">Property Images</label>
+                                <input id="property-image" type="file" name="property-image" class="form-control" multiple accept="image/*">
+                                <p class="pg-field-help">Choose up to 20 images. All image formats supported (JPEG, PNG, WebP, GIF, BMP, TIFF, etc.). Images up to 5MB each.</p>
+                            </div>
+                        </div>
+                        <div class="pg-gallery-upload" style="margin-top: 1rem;">
+                            <div class="pg-field">
+                                <label for="property-videos">Property Videos</label>
+                                <input id="property-videos" type="file" name="property-videos" class="form-control" multiple accept="video/*">
+                                <p class="pg-field-help">Choose up to 5 videos. All video formats supported (MP4, WebM, MOV, AVI, MKV, etc.). Videos up to 50MB each.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pg-submit">
                         <button name="submit" type="submit" class="btn btn-primary">Register PG</button>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
+        </div>
     </div>
 </section>
 
 <script>
-    document.getElementById('city').setAttribute('disabled', 'true');
-
-	async function fetchStates () {
-        return await fetch('/state-list').then(function(response) {
-				return response.json();
-			}).then(function(data) {
-			return data;
-		});
-    }
-
-    fetchStates().then(data => {
-		const stateSelector = document.getElementById('state');
-		data.forEach(v => {
-			const newOption = document.createElement('option');
-			newOption.setAttribute('value', v);
-			newOption.innerText = v;
-			stateSelector.appendChild(newOption);
-        });
-    });
-
-	document.getElementById('state').addEventListener('change', (e) => {
-		const val = e.target.value;
-		const citySelector = document.getElementById('city');
-
-		if (val) {
-			console.log('true')
-			citySelector.removeAttribute('disabled');
-			citySelector.innerText = '';
-			fetch('/city/' + val).then(response => {
-				return response.json()
-			}).then(data => {
-					data.forEach(v => {
-						const newOption = document.createElement('option');
-						newOption.setAttribute('value', v);
-						newOption.innerText = v;
-						citySelector.appendChild(newOption);
-					});
-				});
-		}
-		else {
-			citySelector.innerText = '';
-			citySelector.setAttribute('disabled', 'true');
-		}
-    });
-
-    for (let inputHolder of document.getElementsByClassName('has-text-input')) {
-		inputHolder.children[inputHolder.children.length - 1].setAttribute('disabled', 'true');
-
-	    inputHolder.children[0].addEventListener('change', (e) => {
-			const parent = e.target.parentElement;
-			const checked = e.target.checked;
-			if (checked)
-    		    e.target.parentElement.children[parent.children.length - 1].removeAttribute('disabled');
-			else
-				e.target.parentElement.children[parent.children.length - 1].setAttribute('disabled', 'true');
-        });
-    }
-
     const form = document.getElementById('form');
+    const stateSelector = document.getElementById('state');
+    const citySelector = document.getElementById('city');
 
-    form.addEventListener('submit', e => {
-	    e.preventDefault();
+    citySelector.setAttribute('disabled', 'true');
 
-	    if (!form.checkValidity())
-		    return;
+    async function fetchStates() {
+        return fetch('/state-list').then((response) => response.json());
+    }
 
-	    const url = '/property/';
-	    const formData = new FormData(form);
+    async function fetchCities(state) {
+        return fetch(`/city/${state}`).then((response) => response.json());
+    }
 
-	    const config = {
-		    url: url,
-		    method: 'post',
-		    headers: {
-			    'Content-Type': 'multipart/form-data',
-		    },
-		    data: formData,
-	    };
+    fetchStates().then((states) => {
+        for (const state of states) {
+            const option = document.createElement('option');
+            option.value = state;
+            option.innerText = state;
+            stateSelector.appendChild(option);
+        }
+    });
 
-	    axios(config)
-		    .then((response) => {
-			    addFlash('success', 'Property has been successfully created!');
-			    setTimeout(() => {
-				    window.location = '/provider/<%= userRoleID %>/';
-			    }, 2000);
-		    })
-		    .catch((error) => {
-			    const errors = error.response.data.errors;
-			    for (let err of errors)
-				    addFlash ('error', err.msg);
-		    });
+    stateSelector.addEventListener('change', (e) => {
+        const value = e.target.value;
+        citySelector.innerHTML = '<option value="">Select city</option>';
+
+        if (!value) {
+            citySelector.setAttribute('disabled', 'true');
+            return;
+        }
+
+        fetchCities(value).then((cities) => {
+            for (const city of cities) {
+                const option = document.createElement('option');
+                option.value = city;
+                option.innerText = city;
+                citySelector.appendChild(option);
+            }
+
+            citySelector.removeAttribute('disabled');
+        });
+    });
+
+    for (const inputHolder of document.getElementsByClassName('has-text-input')) {
+        const textInput = inputHolder.children[inputHolder.children.length - 1];
+        const checkbox = inputHolder.children[0];
+
+        textInput.setAttribute('disabled', 'true');
+
+        checkbox.addEventListener('change', (e) => {
+            if (e.target.checked)
+                textInput.removeAttribute('disabled');
+            else
+                textInput.setAttribute('disabled', 'true');
+        });
+    }
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        if (!form.checkValidity())
+            return;
+
+        // Validate file counts
+        const imageInput = document.getElementById('property-image');
+        const videoInput = document.getElementById('property-videos');
+
+        if (imageInput.files.length > 20) {
+            addFlash('error', 'Maximum 20 images allowed. You selected ' + imageInput.files.length);
+            return;
+        }
+
+        if (videoInput && videoInput.files.length > 5) {
+            addFlash('error', 'Maximum 5 videos allowed. You selected ' + videoInput.files.length);
+            return;
+        }
+
+        if (imageInput.files.length === 0) {
+            addFlash('error', 'Please upload at least one image.');
+            return;
+        }
+
+        const formData = new FormData();
+        const fields = [
+            'name',
+            'addBuilding',
+            'addL1',
+            'addL2',
+            'exactLocationLink',
+            'landmark',
+            'state',
+            'city',
+            'zipCode',
+            'maxOccupancy',
+            'availableRooms',
+            'type',
+            'desc',
+            'tagLine',
+            'since',
+            'rate',
+            'bookingMoney'
+        ];
+
+        for (const field of fields) {
+            const input = form.elements[field];
+            if (input)
+                formData.append(field, input.value || '');
+        }
+
+        for (const checkbox of form.querySelectorAll('input[name="occupancy"]:checked'))
+            formData.append('occupancy', checkbox.value);
+
+        for (const checkbox of form.querySelectorAll('input[name="amenities"]:checked'))
+            formData.append('amenities', checkbox.value);
+
+        for (const checkbox of form.querySelectorAll('input[name="rules"]:checked'))
+            formData.append('rules', checkbox.value);
+
+        for (const row of form.querySelectorAll('.has-text-input')) {
+            const checkbox = row.querySelector('input[type="checkbox"]');
+            const textInput = row.querySelector('input[type="text"]');
+            if (!checkbox || !textInput || !checkbox.checked) continue;
+
+            if (checkbox.name === 'food') {
+                formData.append('food', checkbox.value);
+                formData.append('foodText', textInput.value || '');
+            }
+
+            if (checkbox.name === 'otherCharges') {
+                formData.append('otherCharges', checkbox.value);
+                formData.append('otherChargesText', textInput.value || '');
+            }
+        }
+
+        for (const file of imageInput.files)
+            formData.append('property-image', file);
+
+        if (videoInput) {
+            for (const file of videoInput.files)
+                formData.append('property-videos', file);
+        }
+
+        axios({
+            url: '/property/',
+            method: 'post',
+            data: formData,
+        })
+            .then(() => {
+                addFlash('success', 'Property has been successfully created!');
+                setTimeout(() => {
+                    window.location = '/provider/<%= userRoleID %>/';
+                }, 2000);
+            })
+            .catch((error) => {
+                const errors = error.response?.data?.errors;
+                if (errors && errors.length > 0) {
+                    for (const err of errors)
+                        addFlash('error', err.msg);
+                    return;
+                }
+
+                const message = error.response?.data?.error || error.message || 'Could not create the property.';
+                addFlash('error', message);
+            });
     });
 </script>

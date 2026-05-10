@@ -1,4 +1,12 @@
-const {registrationSchema, loginSchema, riderSchema, providerSchema, propertySchema, contactSchema} = require('../utils/validation_schemas');
+const {
+	registrationSchema,
+	loginSchema,
+	riderSchema,
+	providerSchema,
+	propertySchema,
+	contactSchema,
+	conversationMessageSchema
+} = require('../utils/validation_schemas');
 const {getZipcodeDetails} = require("../utils/zipcode_details");
 
 /* UTILITY FUNCTION TO GET ERROR MESSAGES */
@@ -28,9 +36,9 @@ function validateRegistration (req, res, next) {
 }
 
 function validateLogin (req, res, next) {
-	const {email, pass} = req.body;
+	const {email, pass, captchaAnswer} = req.body;
 	const {error} = loginSchema.validate({
-		email, pass
+		email, pass, captchaAnswer
 	});
 
 	if (error) {
@@ -56,8 +64,10 @@ function validateRiderDetails (req, res, next) {
 }
 
 async function validateProviderDetails (req, res, next) {
-	const {phone, dob, gst, addBuilding, addL1, landmark, state, city, zipCode} = req.body;
-	const {error} = providerSchema.validate({phone, dob, gst, addBuilding, addL1, landmark, state, city, zipCode});
+	const {phone, dob, gst, licenseValidUpto, addBuilding, addL1, landmark, state, city, zipCode} = req.body;
+	const {error} = providerSchema.validate({
+		phone, dob, gst, licenseValidUpto, addBuilding, addL1, landmark, state, city, zipCode
+	});
 
 	if (error) {
 		const errors = errorModifier(error);
@@ -81,13 +91,13 @@ async function validateProviderDetails (req, res, next) {
 
 async function validatePropertyDetails (req, res, next) {
 	const {
-		name, addBuilding, addL1, landmark, state, city, zipCode, maxOccupancy,
-		type, desc, occupancy, rate, tagLine, since, bookingMoney
+		name, addBuilding, addL1, exactLocationLink, landmark, state, city, zipCode, maxOccupancy,
+		availableRooms, type, desc, occupancy, rate, tagLine, since, bookingMoney
 	} = req.body;
 
 	const {error} = propertySchema.validate({
-		name, addBuilding, addL1, landmark, state, city, zipCode, maxOccupancy,
-		type, desc, occupancy, rate, tagLine, since, bookingMoney
+		name, addBuilding, addL1, exactLocationLink, landmark, state, city, zipCode, maxOccupancy,
+		availableRooms, type, desc, occupancy, rate, tagLine, since, bookingMoney
 	});
 
 	if (error) {
@@ -124,11 +134,24 @@ function validateContact (req, res, next) {
 	next();
 }
 
+function validateConversationMessage (req, res, next) {
+	const {content} = req.body;
+	const {error} = conversationMessageSchema.validate({content});
+
+	if (error) {
+		const errors = errorModifier(error);
+		return res.status(406).send({error: true, errors});
+	}
+
+	next();
+}
+
 module.exports = {
 	validateRegistration,
 	validateLogin,
 	validateRiderDetails,
 	validateProviderDetails,
 	validatePropertyDetails,
-	validateContact
+	validateContact,
+	validateConversationMessage
 }

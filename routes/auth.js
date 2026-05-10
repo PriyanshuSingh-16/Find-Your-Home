@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const {randomInt} = require('crypto');
 const logins = require('../models/login');
 const registrations = require('../models/register');
 const {generateValidationKey, forgetPasswordKeyGenerator} = require('../utils/key_generator');
@@ -10,6 +11,109 @@ const providers = require('../models/provider');
 const keys = require('../models/key');
 const passport = require('passport');
 const {adminKey, serverURL} = require('../config');
+
+const CAPTCHA_WORD_BANK = [
+	'BALCONY',
+	'LANDMARK',
+	'HOSTEL',
+	'SKYLINE',
+	'GATEWAY',
+	'CORRIDOR',
+	'VERANDA',
+	'JOURNEY',
+	'PARKING',
+	'VILLAGE'
+];
+
+function pickRandom(list) {
+	return list[randomInt(list.length)];
+}
+
+function normalizeCaptchaAnswer(value) {
+	return String(value || '').trim().toLowerCase().replace(/\s+/g, '');
+}
+
+function getUniquePositions(length, count) {
+	const positions = new Set();
+
+	while (positions.size < count)
+		positions.add(randomInt(length));
+
+	return Array.from(positions).sort((a, b) => a - b);
+}
+
+function buildArithmeticCaptcha() {
+	const first = randomInt(11, 36);
+	const second = randomInt(3, 13);
+	const third = randomInt(2, 10);
+	const pattern = randomInt(3);
+	let question;
+	let answer;
+
+	if (pattern === 0) {
+		question = `(${first} + ${second}) x ${third}`;
+		answer = String((first + second) * third);
+	} else if (pattern === 1) {
+		question = `${first} - ${second} + ${third} x 2`;
+		answer = String(first - second + (third * 2));
+	} else {
+		const multiplier = randomInt(2, 6);
+		question = `${first} + ${second} x ${multiplier} - ${third}`;
+		answer = String(first + (second * multiplier) - third);
+	}
+
+	return {question, answer};
+}
+
+function buildSequenceCaptcha() {
+	const start = randomInt(4, 18);
+	const step = randomInt(2, 7);
+	const sequence = Array.from({length: 4}, (_, index) => start + (index * step));
+
+	return {
+		question: `What comes next: ${sequence.join(', ')}, ?`,
+		answer: String(start + (4 * step))
+	};
+}
+
+function buildWordPositionCaptcha() {
+	const word = pickRandom(CAPTCHA_WORD_BANK);
+	const positions = getUniquePositions(word.length, 3);
+	const labels = positions.map(position => position + 1);
+	const answer = positions.map(position => word[position]).join('');
+
+	return {
+		question: `Type letters ${labels.join(', ')} from ${word}`,
+		answer
+	};
+}
+
+function buildReverseCaptcha() {
+	const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+	let token = '';
+
+	while (token.length < 5)
+		token += chars[randomInt(chars.length)];
+
+	return {
+		question: `Type this in reverse: ${token}`,
+		answer: token.split('').reverse().join('')
+	};
+}
+
+function generateLoginCaptcha() {
+	const challenge = pickRandom([
+		buildArithmeticCaptcha,
+		buildSequenceCaptcha,
+		buildWordPositionCaptcha,
+		buildReverseCaptcha
+	])();
+
+	return {
+		question: challenge.question,
+		answer: normalizeCaptchaAnswer(challenge.answer),
+	};
+}
 
 /* --------- REGISTRATION --------- */
 router.get('/registration', (req, res) => {
@@ -107,7 +211,12 @@ router.get('/validate', async (req, res) => {
 
 router.get('/login', (req, res) => {
 	try {
-		res.render('user-login', {attempt: req.query.attempt || 'first'});
+		const captcha = generateLoginCaptcha();
+		req.session.loginCaptcha = captcha;
+		res.render('user-login', {
+			attempt: req.query.attempt || 'first',
+			captchaQuestion: captcha.question
+		});
 	} catch (e) {
 		res.render('error', {code: 500, error: 'Internal server error'})
 	}
@@ -115,7 +224,19 @@ router.get('/login', (req, res) => {
 
 router.post('/login', validateLogin, async (req, res, next) => {
 	try {
-		const {email} = req.body;
+		const {email, captchaAnswer} = req.body;
+		const expectedCaptcha = req.session.loginCaptcha?.answer;
+
+		if (!expectedCaptcha || normalizeCaptchaAnswer(captchaAnswer) !== expectedCaptcha) {
+			const captcha = generateLoginCaptcha();
+			req.session.loginCaptcha = captcha;
+			return res.status(401).render('user-login', {
+				attempt: 'captcha-failed',
+				captchaQuestion: captcha.question
+			});
+		}
+
+		delete req.session.loginCaptcha;
 		const user = await logins.findOne({username: email});
 
 		let redirectTo = req.session.redirectUrl;

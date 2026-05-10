@@ -1,0 +1,328 @@
+<% layout('layout/boilerplate.ejs') -%>
+<%
+    const activeContact = activeConversation
+        ? (isProvider ? activeConversation.rider : activeConversation.provider)
+        : null;
+    const activeProperty = activeConversation ? activeConversation.property : null;
+%>
+
+<style>
+    .messages-page {
+        background: linear-gradient(180deg, #f5fafc 0%, #eef4f7 100%);
+        padding: 1rem 0 4rem;
+    }
+
+    .messages-shell {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+    }
+
+    .messages-card {
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        border-radius: 1.8rem;
+        box-shadow: 0 1.3rem 2.8rem rgba(31, 56, 88, 0.08);
+        overflow: hidden;
+    }
+
+    .messages-sidebar,
+    .messages-thread {
+        display: grid;
+    }
+
+    .messages-head {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(228, 241, 247, 0.96) 100%);
+        border-bottom: 1px solid rgba(13, 110, 253, 0.08);
+        padding: 1.4rem 1.5rem;
+    }
+
+    .messages-head p {
+        color: #4c86a8;
+        font-size: 0.88rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        margin-bottom: 0.45rem;
+        text-transform: uppercase;
+    }
+
+    .messages-head h1,
+    .messages-head h2 {
+        color: #163247;
+        font-family: 'Poppins', sans-serif;
+        font-style: italic;
+        margin: 0;
+    }
+
+    .messages-subtitle {
+        color: #5f7788;
+        line-height: 1.7;
+        margin-top: 0.6rem;
+    }
+
+    .messages-list {
+        display: grid;
+        gap: 0.9rem;
+        padding: 1rem;
+    }
+
+    .messages-list-item {
+        background: #f8fbfd;
+        border: 1px solid rgba(76, 134, 168, 0.12);
+        border-radius: 1.2rem;
+        color: inherit;
+        display: block;
+        padding: 1rem;
+        text-decoration: none;
+    }
+
+    .messages-list-item.active {
+        background: #eaf4f8;
+        border-color: rgba(45, 115, 150, 0.34);
+    }
+
+    .messages-list-item strong,
+    .messages-panel-title strong {
+        color: #17344b;
+        display: block;
+    }
+
+    .messages-list-item span,
+    .messages-list-item p,
+    .messages-panel-title span,
+    .messages-contact-grid span,
+    .message-bubble small {
+        color: #60798a;
+    }
+
+    .messages-list-item p {
+        margin: 0.45rem 0 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .messages-pill {
+        background: #2d7396;
+        border-radius: 999px;
+        color: #fff;
+        display: inline-flex;
+        font-size: 0.75rem;
+        justify-content: center;
+        min-width: 1.7rem;
+        padding: 0.2rem 0.55rem;
+    }
+
+    .messages-thread-body {
+        display: grid;
+        gap: 1rem;
+        padding: 1.25rem 1.5rem 1.5rem;
+    }
+
+    .messages-contact-grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .messages-contact-card {
+        background: #f8fbfd;
+        border: 1px solid rgba(76, 134, 168, 0.12);
+        border-radius: 1.2rem;
+        padding: 1rem;
+    }
+
+    .messages-contact-card strong {
+        color: #17344b;
+        display: block;
+        margin-top: 0.25rem;
+        word-break: break-word;
+    }
+
+    .messages-contact-card a {
+        color: #2d7396;
+        text-decoration: none;
+    }
+
+    .messages-contact-card a:hover {
+        text-decoration: underline;
+    }
+
+    .message-stream {
+        background: #f9fcfd;
+        border: 1px solid rgba(76, 134, 168, 0.12);
+        border-radius: 1.4rem;
+        display: grid;
+        gap: 0.85rem;
+        max-height: 460px;
+        overflow-y: auto;
+        padding: 1rem;
+    }
+
+    .message-bubble {
+        border-radius: 1.2rem;
+        max-width: min(80%, 580px);
+        padding: 0.9rem 1rem;
+    }
+
+    .message-bubble.self {
+        background: #2d7396;
+        color: #fff;
+        justify-self: end;
+    }
+
+    .message-bubble.self small {
+        color: rgba(255, 255, 255, 0.82);
+    }
+
+    .message-bubble.other {
+        background: #ffffff;
+        border: 1px solid rgba(76, 134, 168, 0.16);
+        justify-self: start;
+    }
+
+    .message-bubble p {
+        margin: 0.4rem 0 0;
+        white-space: pre-wrap;
+    }
+
+    .messages-compose textarea {
+        background: #fbfdfe;
+        border: 1px solid #d9e6ee;
+        border-radius: 1rem;
+        box-shadow: none;
+        min-height: 130px;
+        padding: 0.9rem 1rem;
+        width: 100%;
+    }
+
+    .messages-compose-actions {
+        align-items: center;
+        display: flex;
+        gap: 0.8rem;
+        justify-content: space-between;
+        margin-top: 0.9rem;
+    }
+
+    .messages-empty {
+        background: #f8fbfd;
+        border: 1px dashed rgba(76, 134, 168, 0.24);
+        border-radius: 1.4rem;
+        color: #5f7788;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    @media (max-width: 991.98px) {
+        .messages-shell {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<section class="messages-page">
+    <div class="container">
+        <div class="messages-shell">
+            <aside class="messages-card messages-sidebar">
+                <div class="messages-head">
+                    <p>Inbox</p>
+                    <h1><%= isProvider ? 'Owner messages' : 'Owner contacts' %></h1>
+                    <div class="messages-subtitle">Keep all rider-provider conversations for each property in one place.</div>
+                </div>
+
+                <div class="messages-list">
+                    <% if (inboxConversations.length === 0) { %>
+                        <div class="messages-empty">No conversations yet. Open a property page and use the contact owner button to start one.</div>
+                    <% } else { %>
+                        <% for (let conversation of inboxConversations) { %>
+                            <a
+                                href="/messages/<%= conversation._id %>"
+                                class="messages-list-item <%= activeConversation && activeConversation._id.equals(conversation._id) ? 'active' : '' %>"
+                            >
+                                <div class="d-flex justify-content-between gap-2">
+                                    <div class="messages-panel-title">
+                                        <strong><%= isProvider ? conversation.rider.name : conversation.provider.name %></strong>
+                                        <span><%= conversation.property.name %></span>
+                                    </div>
+                                    <% if ((!isProvider && conversation.unreadForRider > 0) || (isProvider && conversation.unreadForProvider > 0)) { %>
+                                        <span class="messages-pill">
+                                            <%= isProvider ? conversation.unreadForProvider : conversation.unreadForRider %>
+                                        </span>
+                                    <% } %>
+                                </div>
+                                <p><%= conversation.messages.length ? conversation.messages[conversation.messages.length - 1].content : 'No messages yet. Start the conversation.' %></p>
+                            </a>
+                        <% } %>
+                    <% } %>
+                </div>
+            </aside>
+
+            <section class="messages-card messages-thread">
+                <% if (!activeConversation) { %>
+                    <div class="messages-head">
+                        <p>Conversation</p>
+                        <h2>No conversation selected</h2>
+                        <div class="messages-subtitle">Choose an existing thread from the left, or start one from any property page.</div>
+                    </div>
+                <% } else { %>
+                    <div class="messages-head">
+                        <p>Conversation</p>
+                        <h2><%= activeProperty.name %></h2>
+                        <div class="messages-subtitle">
+                            Chat directly with <%= activeContact.name %> about this property and use the details below for quick follow-up.
+                        </div>
+                    </div>
+
+                    <div class="messages-thread-body">
+                        <div class="messages-contact-grid">
+                            <div class="messages-contact-card">
+                                <span><%= isProvider ? 'Rider' : 'Property owner' %></span>
+                                <strong><%= activeContact.name %></strong>
+                            </div>
+                            <div class="messages-contact-card">
+                                <span>Phone Number</span>
+                                <strong>
+                                    <% if (activeContact.phone) { %>
+                                        <a href="tel:+91<%= activeContact.phone %>">+91 <%= activeContact.phone %></a>
+                                    <% } else { %>
+                                        Phone number not added yet
+                                    <% } %>
+                                </strong>
+                            </div>
+                            <div class="messages-contact-card">
+                                <span>Email</span>
+                                <strong><a href="mailto:<%= activeContact.email %>"><%= activeContact.email %></a></strong>
+                            </div>
+                            <div class="messages-contact-card">
+                                <span>Property</span>
+                                <strong><a href="/property/<%= activeProperty._id %>"><%= activeProperty.name %></a></strong>
+                            </div>
+                        </div>
+
+                        <div class="message-stream">
+                            <% if (activeConversation.messages.length === 0) { %>
+                                <div class="messages-empty">No messages yet. Send the first message below.</div>
+                            <% } else { %>
+                                <% for (let message of activeConversation.messages) { %>
+                                    <div class="message-bubble <%= message.senderRole === user.role ? 'self' : 'other' %>">
+                                        <small><%= message.senderName %> • <%= message.createdAt.toLocaleString('en-IN', {day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'}) %></small>
+                                        <p><%= message.content %></p>
+                                    </div>
+                                <% } %>
+                            <% } %>
+                        </div>
+
+                        <form class="messages-compose" method="post" action="/messages/<%= activeConversation._id %>">
+                            <label class="form-label" for="message-content">Send a message</label>
+                            <textarea id="message-content" name="content" minlength="2" maxlength="1500" placeholder="Write your message here..." required></textarea>
+                            <div class="messages-compose-actions">
+                                <span class="messages-subtitle mb-0">Messages stay grouped by property so follow-ups remain organized.</span>
+                                <button class="btn btn-primary" type="submit">Send Message</button>
+                            </div>
+                        </form>
+                    </div>
+                <% } %>
+            </section>
+        </div>
+    </div>
+</section>

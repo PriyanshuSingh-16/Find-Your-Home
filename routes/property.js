@@ -7,6 +7,8 @@ const properties = require('../models/property');
 const riders = require('../models/rider');
 const keys = require('../models/key');
 const {uploadPropertyImages} = require("../middlewares/file_uploader");
+const {uploadPropertyVideos} = require("../middlewares/file_uploader");
+const {uploadPropertyMedia} = require("../middlewares/file_uploader");
 const {convertToArray} = require("../utils/some_methods");
 const {paymentKeyGenerator} = require('../utils/key_generator');
 const {stripePrivateKey, serverURL} = require('../config');
@@ -124,13 +126,16 @@ router.get('/new', isLoggedIn, isRoleProvider, (req, res) => {
 router.post('/',
 	isLoggedIn,
 	isRoleProvider,
-	uploadPropertyImages.array('property-image', 5),
+	uploadPropertyMedia.fields([
+		{ name: 'property-image', maxCount: 20 },
+		{ name: 'property-videos', maxCount: 5 }
+	]),
 	validatePropertyDetails,
 	async (req, res) => {
 	try {
 		let {
-			name, addBuilding, addL1, addL2, landmark, state, city, zipCode, maxOccupancy, type, desc, food, foodText,
-			amenities, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since, bookingMoney
+			name, addBuilding, addL1, addL2, exactLocationLink, landmark, state, city, zipCode, maxOccupancy, type, desc, food, foodText,
+			amenities, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since, bookingMoney, availableRooms
 		} = req.body;
 		const address = { building: addBuilding, addL1, addL2, landmark, state, city, zipcode: zipCode, country: 'India' };
 
@@ -163,15 +168,23 @@ router.post('/',
 
 		const userRoleID = req.session.userRoleID;
 		const owner = await providers.findById({_id: userRoleID});
+		if (!owner)
+			return res.status(404).send({error: 'Provider not found!'});
 
 		occupancy = convertToArray(occupancy);
 
-		const images = req.files.map(v => { return v.path; });
+		// Extract image and video files from fields
+		const images = ((req.files && req.files['property-image']) || [])
+			.map(v => v.path);
+		
+		const videos = ((req.files && req.files['property-videos']) || [])
+			.map(v => v.path);
 
 		const propertyCreated = await properties.create({
 			name, address: address, maxOcc: maxOccupancy, type, desc, food: foodProp, amenities: amenityProp, rules: rulesProp,
 			otherCharges: otherChargesProp, occupancy, rate, tagline: tagLine, since, interested: 0, rating: 0.0, owner: owner, bookingMoney,
-			images
+			availableRooms,
+			images, videos, exactLocationLink
 		});
 
 		owner.properties.push(propertyCreated.id);
@@ -182,7 +195,12 @@ router.post('/',
 			propertyCreated
 		});
 	} catch (e) {
-		res.render('error', {code: 500, error: 'Internal server error'})
+		console.error('Property creation error:', {
+			message: e.message,
+			stack: e.stack,
+			files: req.files ? Object.keys(req.files) : 'no files'
+		});
+		res.status(500).send({error: e.message || 'Internal server error'});
 	}
 });
 
@@ -228,6 +246,10 @@ router.get('/:id/edit', isLoggedIn, isRoleProvider, async (req, res) => {
 router.patch('/:id',
 	isLoggedIn,
 	isRoleProvider,
+	uploadPropertyMedia.fields([
+		{ name: 'property-image', maxCount: 20 },
+		{ name: 'property-videos', maxCount: 5 }
+	]),
 	validatePropertyDetails,
 	async (req, res) => {
 	try {
@@ -238,9 +260,23 @@ router.patch('/:id',
 			return res.status(403).send({error: 'Not Authorized!'});
 
 		let {
+			name, addBuilding, addL1, addL2, exactLocationLink, landmark, state, city, zipCode,
 			maxOccupancy, type, desc, food, foodText,
-			amenities, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since
+			amenities, rules, otherCharges, otherChargesText, occupancy, rate, tagLine, since, bookingMoney, availableRooms
 		} = req.body;
+
+		property.name = name;
+		property.address = {
+			building: addBuilding,
+			addL1,
+			addL2,
+			landmark,
+			city,
+			state,
+			zipcode: zipCode,
+			country: 'India'
+		};
+		property.exactLocationLink = exactLocationLink;
 
 		property.food = [];
 		food = convertToArray(food);
@@ -255,7 +291,7 @@ router.patch('/:id',
 			property.amenities.push({name: v, path: `images/svg/${v}`});
 		});
 
-		const allRules = ['visitor-entry', 'non-veg-food', 'opposite-gender', 'smoking', 'drinking', 'loud-music', 'party'];
+		const allRules = ['visitor', 'non-veg-food', 'other-gender', 'smoking', 'drinking', 'loud-music', 'party'];
 		property.rules = [];
 		rules = convertToArray(rules);
 		allRules.forEach((v) => {
@@ -271,19 +307,37 @@ router.patch('/:id',
 
 		occupancy = convertToArray(occupancy);
 
-		property.maxOccupancy = maxOccupancy;
+		property.maxOcc = maxOccupancy;
+		property.availableRooms = availableRooms;
 		property.type = type;
 		property.desc = desc;
 		property.occupancy = occupancy;
 		property.rate = rate;
-		property.tagLine = tagLine;
+		property.tagline = tagLine;
 		property.since = since;
+		property.bookingMoney = bookingMoney;
+
+		if (req.files && (req.files['property-image'] || req.files['property-videos'])) {
+			const imageFiles = req.files['property-image'] || [];
+			const videoFiles = req.files['property-videos'] || [];
+			
+			if (imageFiles.length > 0)
+				property.images = imageFiles.map((file) => file.path);
+			
+			if (videoFiles.length > 0)
+				property.videos = videoFiles.map((file) => file.path);
+		}
 
 		await property.save();
 
 		res.send({success: 'property edited successfully'});
 	} catch (e) {
-		res.render('error', {code: 500, error: 'Internal server error'})
+		console.error('Property edit error:', {
+			message: e.message,
+			stack: e.stack,
+			files: req.files ? Object.keys(req.files) : 'no files'
+		});
+		res.status(500).send({error: e.message || 'Internal server error'});
 	}
 });
 
@@ -341,10 +395,28 @@ router.post('/:id/toggle', isLoggedIn, isRoleRider, async (req, res) => {
 router.get('/:id/makePayment', isLoggedIn, isRoleRider, async (req, res) => {
 	try {
 		const {id} = req.params;
+		const {checkInDate, roomsBooked, verificationKey} = req.query;
 		const property = await properties.findById({_id: id});
 
 		if (!stripePrivateKey)
 			return res.status(500).send({error: 'Stripe is not configured. Add STRIPE_PRIVATE_KEY in secret.env.'});
+
+		if (!checkInDate || !roomsBooked || !verificationKey)
+			return res.status(406).send({error: 'Booking details are incomplete. Please verify them again.'});
+
+		const verificationRequest = await keys.findOne({key: verificationKey, purpose: 'booking-otp'});
+		if (!verificationRequest)
+			return res.status(404).send({error: 'Booking verification request not found. Please verify booking details again.'});
+
+		if (
+			verificationRequest.content.user !== req.session.userRoleID.toString() ||
+			verificationRequest.content.propertyID !== property._id.toString() ||
+			verificationRequest.content.checkInDate !== checkInDate ||
+			Number(verificationRequest.content.roomsBooked) !== Number(roomsBooked) ||
+			!verificationRequest.content.verified
+		) {
+			return res.status(403).send({error: 'Booking verification is invalid. Please verify details again.'});
+		}
 
 		const paymentKey = paymentKeyGenerator();
 		const paymentSession = await stripe.checkout.sessions.create({
@@ -361,10 +433,10 @@ router.get('/:id/makePayment', isLoggedIn, isRoleRider, async (req, res) => {
 			}],
 			mode: 'payment',
 			success_url: `${serverURL}/booking/payment-successful?propertyID=${id}&key=${paymentKey}`,
-			cancel_url: `${serverURL}/property/${id}`
+			cancel_url: `${serverURL}/booking/${id}/new`
 		});
 
-		res.send({url: paymentSession.url}).json();
+		res.json({url: paymentSession.url});
 
 		await keys.create({
 			key: paymentKey,
@@ -372,9 +444,12 @@ router.get('/:id/makePayment', isLoggedIn, isRoleRider, async (req, res) => {
 				user: req.session.userRoleID.toString(),
 				prop: property._id.toString(),
 				paymentID: paymentSession.id,
+				checkInDate,
+				roomsBooked,
 			},
 			purpose: 'payment'
 		});
+		await keys.deleteOne({_id: verificationRequest._id});
 	} catch (e) {
 		console.log(e);
 		res.status(500).send({error: e.message || 'Internal server error'});

@@ -1,0 +1,365 @@
+<!-- TERMS AND CONDITIONS PAGE -->
+<% layout('layout/boilerplate.ejs') -%>
+
+<section class="terms-page">
+    <style>
+        .terms-page {
+            background: linear-gradient(180deg, #f5fafc 0%, #eef4f7 100%);
+            padding: 2rem 0 4rem;
+        }
+
+        .terms-container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .terms-hero {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(13, 110, 253, 0.08);
+            border-radius: 1.8rem;
+            box-shadow: 0 10px 30px rgba(31, 56, 88, 0.06);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .terms-hero .eyebrow {
+            color: #4c86a8;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            margin-bottom: 0.6rem;
+            text-transform: uppercase;
+        }
+
+        .terms-hero h1 {
+            color: #163247;
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.4rem;
+            font-style: italic;
+            margin: 0 0 0.8rem 0;
+        }
+
+        .terms-hero .lead {
+            color: #587082;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .terms-content {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(13, 110, 253, 0.08);
+            border-radius: 1.6rem;
+            box-shadow: 0 10px 30px rgba(31, 56, 88, 0.06);
+            padding: 2.2rem;
+        }
+
+        .terms-intro {
+            color: #5e7687;
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .terms-section {
+            margin-bottom: 2rem;
+        }
+
+        .terms-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .terms-section h2 {
+            color: #163247;
+            display: flex;
+            align-items: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0 0 0.8rem 0;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid rgba(13, 110, 253, 0.1);
+        }
+
+        .terms-section h2 i {
+            color: #2d7396;
+            font-size: 1.5rem;
+            margin-right: 0.7rem;
+        }
+
+        .terms-section p,
+        .terms-section li {
+            color: #5e7687;
+            line-height: 1.85;
+            margin-bottom: 0.9rem;
+        }
+
+        .terms-section ul {
+            margin: 1rem 0 0 1.2rem;
+            padding: 0;
+        }
+
+        .terms-section li {
+            margin-bottom: 0.8rem;
+        }
+
+        .terms-highlight {
+            background: linear-gradient(135deg, rgba(45, 115, 150, 0.08) 0%, rgba(13, 110, 253, 0.06) 100%);
+            border-left: 4px solid #2d7396;
+            padding: 1.1rem 1.2rem;
+            border-radius: 0.8rem;
+            margin: 1.2rem 0;
+            color: #17344b;
+            font-weight: 500;
+        }
+
+        .terms-warning {
+            background: #fff4e5;
+            border-left: 4px solid #f59e0b;
+            padding: 1.1rem 1.2rem;
+            border-radius: 0.8rem;
+            margin: 1.2rem 0;
+            color: #8a5a16;
+            font-weight: 500;
+        }
+
+        .terms-footer {
+            background: linear-gradient(135deg, #f8fcfe 0%, #e7f1f6 100%);
+            border: 1px solid rgba(13, 110, 253, 0.08);
+            border-radius: 1.2rem;
+            padding: 1.5rem 1.3rem;
+            margin-top: 2.5rem;
+            color: #365166;
+            font-size: 0.95rem;
+            line-height: 1.75;
+        }
+
+        .terms-footer strong {
+            color: #163247;
+        }
+
+        .terms-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .terms-cta a,
+        .terms-cta button {
+            border-radius: 999px;
+            padding: 0.75rem 1.6rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .terms-cta .btn-primary {
+            background: #2d7396;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .terms-cta .btn-primary:hover {
+            background: #1f5070;
+            box-shadow: 0 4px 12px rgba(45, 115, 150, 0.3);
+        }
+
+        .terms-cta .btn-outline {
+            background: transparent;
+            color: #2d7396;
+            border: 2px solid #2d7396;
+        }
+
+        .terms-cta .btn-outline:hover {
+            background: #f0f6fa;
+        }
+
+        @media (max-width: 767.98px) {
+            .terms-hero,
+            .terms-content {
+                padding: 1.5rem;
+            }
+
+            .terms-hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .terms-section h2 {
+                font-size: 1.1rem;
+            }
+
+            .terms-cta {
+                flex-direction: column;
+            }
+
+            .terms-cta a,
+            .terms-cta button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+
+    <div class="terms-container">
+        <!-- HERO SECTION -->
+        <div class="terms-hero">
+            <p class="eyebrow">StayVista</p>
+            <h1>Terms & Conditions</h1>
+            <p class="lead">Please read our terms carefully before booking or listing a property. By using StayVista, you agree to these terms.</p>
+        </div>
+
+        <!-- CONTENT SECTION -->
+        <div class="terms-content">
+            <p class="terms-intro">
+                These Terms and Conditions establish the rules and regulations for using the StayVista platform. Whether you are a property owner (provider), a tenant (rider), or both, these terms apply to your use of our service. Please review them carefully before proceeding with any booking or property listing.
+            </p>
+
+            <!-- SECTION 1: BOOKING NON-REFUNDABLE POLICY -->
+            <div class="terms-section">
+                <h2><i class="fa fa-ban"></i> Non-Refundable Booking Policy</h2>
+                <p>
+                    All bookings made through StayVista are <strong>final and non-refundable</strong> once payment is confirmed and received. This booking amount is strictly non-refundable under any circumstances, including but not limited to rider cancellations, property owner cancellations, or any other reason.
+                </p>
+                <p>
+                    Once a rider has completed the payment process and confirmed their booking, the funds are transferred to the property owner and cannot be reversed. Riders should carefully review all property details, availability, and terms before confirming their booking.
+                </p>
+                <div class="terms-warning">
+                    <strong>Important:</strong> Cancelled bookings do not qualify for refunds. The booking amount paid is non-refundable and will be retained by the platform and property owner.
+                </div>
+            </div>
+
+            <!-- SECTION 2: PAYMENT SCHEDULE & RENT COLLECTION -->
+            <div class="terms-section">
+                <h2><i class="fa fa-calendar-check-o"></i> Payment Schedule & Monthly Rent Collection</h2>
+                <p>
+                    All monthly rent payments must be collected by the property owner <strong>by the last day of each month</strong>. This ensures smooth operations and timely maintenance planning for your property.
+                </p>
+                <ul>
+                    <li><strong>Payment Due Date:</strong> The last day of each calendar month</li>
+                    <li><strong>Rent Payment Method:</strong> Direct transfer, UPI, or checks as agreed between property owner and tenant</li>
+                    <li><strong>Late Payment Charges:</strong> A 5% fine will be applied to rent received after the due date</li>
+                    <li><strong>Non-Payment:</strong> Failure to pay rent for more than 2 months may result in property owner initiated eviction proceedings</li>
+                </ul>
+                <p>
+                    Property owners are responsible for maintaining clear communication with tenants regarding payment collection and ensuring all payments are documented.
+                </p>
+            </div>
+
+            <!-- SECTION 3: DAMAGE & BREAKAGE CHARGES -->
+            <div class="terms-section">
+                <h2><i class="fa fa-exclamation-triangle"></i> Damage & Breakage Policy</h2>
+                <p>
+                    Tenants are responsible for maintaining the property in good condition. Any damage, breakage, or deterioration beyond normal wear and tear will result in deductions from the security deposit or additional charges from the tenant.
+                </p>
+                <div class="terms-highlight">
+                    <strong>Breakage Charges (Indicative):</strong>
+                    <ul style="margin-top: 0.6rem; margin-bottom: 0; padding-left: 1.2rem;">
+                        <li>Window glass/mirror breakage: ₹500 - ₹2,000 per piece</li>
+                        <li>Door/latch damage: ₹1,000 - ₹3,000</li>
+                        <li>Wall damage (holes, stains): ₹500 - ₹1,500</li>
+                        <li>Furniture damage: Replacement cost or 50-70% of value</li>
+                        <li>Plumbing/electrical damage: ₹2,000 - ₹5,000 depending on severity</li>
+                    </ul>
+                </div>
+                <p>
+                    Property owners must document all damages with photos and provide an itemized list to the tenant. Deductions must be reasonable and justified. Disputes regarding damage charges can be escalated to StayVista support for resolution.
+                </p>
+            </div>
+
+            <!-- SECTION 4: SECURITY DEPOSIT & DEDUCTIONS -->
+            <div class="terms-section">
+                <h2><i class="fa fa-shield"></i> Security Deposit & Deductions</h2>
+                <p>
+                    A security deposit is typically collected at the time of booking to cover potential damages or breaches of terms. The deposit terms should be clearly communicated by the property owner and agreed upon by the tenant.
+                </p>
+                <ul>
+                    <li>Security deposit must be returned within 30 days of checkout (minus any legitimate deductions)</li>
+                    <li>Deductions must be documented and justified with proof (photos, invoices)</li>
+                    <li>Property owners must provide an itemized breakdown of all deductions</li>
+                    <li>Tenants have the right to dispute deductions within 7 days of receiving the deduction notice</li>
+                </ul>
+            </div>
+
+            <!-- SECTION 5: OCCUPANCY & HOUSE RULES -->
+            <div class="terms-section">
+                <h2><i class="fa fa-home"></i> Occupancy & House Rules Compliance</h2>
+                <p>
+                    Tenants must strictly adhere to all house rules defined by the property owner during booking. These rules typically cover occupancy limits, guest policies, noise restrictions, and facility usage.
+                </p>
+                <ul>
+                    <li><strong>Maximum Occupancy:</strong> Rooms cannot exceed the stated occupancy limit</li>
+                    <li><strong>Guest Policy:</strong> Overnight guests must be pre-approved by the property owner</li>
+                    <li><strong>Noise & Conduct:</strong> Tenants must maintain peaceful living conditions and follow local noise regulations</li>
+                    <li><strong>Facility Usage:</strong> Common areas must be kept clean and used responsibly</li>
+                    <li><strong>Violations:</strong> Repeated violations may result in eviction without refund</li>
+                </ul>
+            </div>
+
+            <!-- SECTION 6: PROPERTY OWNER RESPONSIBILITIES -->
+            <div class="terms-section">
+                <h2><i class="fa fa-briefcase"></i> Property Owner Responsibilities</h2>
+                <p>
+                    Property owners are expected to maintain the property in a habitable and safe condition throughout the tenancy period. This includes regular maintenance, timely repairs, and adherence to local housing regulations.
+                </p>
+                <ul>
+                    <li><strong>Maintenance:</strong> Respond to maintenance requests within 48 hours</li>
+                    <li><strong>Safety Standards:</strong> Ensure property meets all local safety and hygiene standards</li>
+                    <li><strong>Documentation:</strong> Provide lease agreements and house rules in writing</li>
+                    <li><strong>Fair Treatment:</strong> Treat all tenants equally and without discrimination</li>
+                    <li><strong>Privacy:</strong> Provide reasonable notice before entering the property</li>
+                </ul>
+            </div>
+
+            <!-- SECTION 7: CANCELLATION & DISPUTE RESOLUTION -->
+            <div class="terms-section">
+                <h2><i class="fa fa-gavel"></i> Cancellation & Dispute Resolution</h2>
+                <p>
+                    In case of disputes between property owners and tenants, StayVista provides a platform for resolution. However, final decisions rest with the involved parties, with StayVista acting as a neutral mediator.
+                </p>
+                <div class="terms-highlight">
+                    <strong>Dispute Resolution Process:</strong>
+                    <ul style="margin-top: 0.6rem; margin-bottom: 0; padding-left: 1.2rem;">
+                        <li>Both parties must report disputes within 7 days of the incident</li>
+                        <li>Provide supporting documentation (photos, communications, receipts)</li>
+                        <li>StayVista support will review and mediate between parties</li>
+                        <li>Decisions are binding and must be accepted by both parties</li>
+                    </ul>
+                </div>
+                <p>
+                    Note: Cancellations initiated by either party are subject to the non-refundable booking policy. The booking amount is retained and not subject to refund even in case of disputes.
+                </p>
+            </div>
+
+            <!-- SECTION 8: LIABILITY & LEGAL COMPLIANCE -->
+            <div class="terms-section">
+                <h2><i class="fa fa-gavel"></i> Liability & Legal Compliance</h2>
+                <p>
+                    StayVista acts as a platform for connecting property owners and tenants and is not liable for direct dealings between parties. Both property owners and tenants agree to comply with all local, state, and national laws and regulations.
+                </p>
+                <ul>
+                    <li><strong>Local Laws:</strong> All agreements must comply with local rental laws and regulations</li>
+                    <li><strong>Tax Compliance:</strong> Property owners are responsible for declaring rental income and paying applicable taxes</li>
+                    <li><strong>No Liability:</strong> StayVista is not responsible for damages, disputes, or legal issues arising from tenant-owner relationships</li>
+                    <li><strong>Indemnity:</strong> Both parties indemnify StayVista against claims arising from their use of the platform</li>
+                </ul>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="terms-footer">
+                <strong>Last Updated:</strong> April 2026<br>
+                <strong>Effective Date:</strong> All bookings made from April 2026 onwards are subject to these terms.<br><br>
+                For questions or clarifications regarding these terms, please contact our support team at <strong>support@stayvista.com</strong> or visit the Help Center in your dashboard.
+            </div>
+
+            <!-- CTA BUTTONS -->
+            <div class="terms-cta">
+                <a href="/" class="btn-outline">Back to Home</a>
+                <button class="btn-primary" onclick="window.history.back()">Go Back</button>
+            </div>
+        </div>
+    </div>
+</section>

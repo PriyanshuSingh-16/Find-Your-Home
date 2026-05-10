@@ -86,6 +86,10 @@ app.get('/city/:state', (req, res) => {
     res.send(cityMap[state]);
 });
 
+app.get('/terms', (req, res) => {
+    res.render('terms');
+});
+
 
 /* ROUTER CONFIGURATION */
 const authRouter = require('./routes/auth');
@@ -96,6 +100,7 @@ const bookingRouter = require('./routes/booking');
 const reviewRouter = require('./routes/review');
 const adminRouter = require('./routes/admin');
 const contactRouter = require('./routes/contact');
+const messagesRouter = require('./routes/messages');
 
 app.use('/auth', authRouter);
 app.use('/rider', riderRouter);
@@ -105,6 +110,7 @@ app.use('/booking', bookingRouter);
 app.use('/review', reviewRouter);
 app.use('/admin', adminRouter);
 app.use('/contact', contactRouter);
+app.use('/messages', messagesRouter);
 
 
 /* LISTENING TO PORT */
